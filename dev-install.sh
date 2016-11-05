@@ -85,7 +85,7 @@ mv clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
 chmod 744 /usr/local/llvm;
 
 # -- Install Valgrind
-curl -L -O ${DOWNLOAD}${VALGRINDBOTTLE};
+curl -O -L ${DOWNLOAD}${VALGRINDBOTTLE};
 brew unlink valgrind || echo "Continuing...";
 brew install ${VALGRINDBOTTLE};
 
