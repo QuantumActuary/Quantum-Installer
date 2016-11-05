@@ -17,4 +17,5 @@ install:
   - brew update
 
 script:
+  - chmod 744 dev-install.sh
   - ./dev-install.sh
