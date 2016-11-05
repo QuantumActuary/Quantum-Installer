@@ -28,7 +28,7 @@ brew unpack --patch --destdir=. python3
 fi
 pushd python3-$PYTHONVER
 
-./configure \
+sudo ./configure \
 --prefix=$PYPATH/$PYTHONVER \
 --enable-ipv6 \
 --datarootdir=$PYPATH/$PYTHONVER/share \
@@ -43,29 +43,29 @@ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
 CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
 CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
 MACOSX_DEPLOYMENT_TARGET=$OSXVER;
-make;
-make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
+sudo make;
+sudo make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
-    rm -rf $PYPATH/$PYTHONVER/lib/static;
+    sudo rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
-mkdir $PYPATH/$PYTHONVER/lib/static;
-cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
+sudo mkdir $PYPATH/$PYTHONVER/lib/static;
+sudo cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
 pushd $PYPATH/$PYTHONVER/bin;
 if [ -f python ] ; then
-    rm -rf python;
+    sudo rm -rf python;
 fi
 if [ -f pip ] ; then
-    rm -rf pip;
+    sudo rm -rf pip;
 fi
 ln -s python3 python;
 ln -s pip3 pip;
-./pip install --upgrade pip setuptools;
-./pip install wheel;
+sudo ./pip install --upgrade pip setuptools;
+sudo ./pip install wheel;
 popd
 popd
 
-rm -rf $PYPATH/$PYTHONVER/share;
-rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
+sudo rm -rf $PYPATH/$PYTHONVER/share;
+sudo rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
 sudo chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
 
 # -- Install Boost-Python
