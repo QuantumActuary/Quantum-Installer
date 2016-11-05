@@ -38,8 +38,8 @@ pushd python3-$PYTHONVER;
 --with-ensurepip \
 --without-gcc \
 --with-valgrind \
-CC=/usr/local/llvm39/bin/clang \
-CXX=/usr/local/llvm39/bin/clang++ \
+CC=/usr/local/llvm/bin/clang \
+CXX=/usr/local/llvm/bin/clang++ \
 LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
 CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
 CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
