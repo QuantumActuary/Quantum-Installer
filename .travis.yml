@@ -1,0 +1,20 @@
+sudo: false
+
+matrix:
+  fast_finish: true
+  include:
+    - language: cpp
+      os: osx
+      osx_image: xcode8
+
+# Only build the master branch, otherwise once the release is added, Github
+# creates a tag which triggers another identical build.
+branches:
+  only:
+    - master
+
+install:
+  - brew update
+
+script:
+  - ./dev-install.sh
