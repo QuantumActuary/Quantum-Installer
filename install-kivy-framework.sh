@@ -23,17 +23,26 @@ OSXRELOCATOR="osxrelocator"
 PYPATH="$SCRIPT_PATH/Kivy.app/Contents/Frameworks/python"
 PYTHON="$PYPATH/$PYTHONVER/bin/python3"
 
+brew unlink python3 || echo "Continuing...";
 if [ ! -d python3-$PYTHONVER ]; then
     brew unpack --patch --destdir=. python3;
 fi;
 pushd python3-$PYTHONVER;
-brew unlink python3 || echo "Continuing...";
-./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
-CC=/usr/local/llvm/bin/clang;
-CXX=/usr/local/llvm/bin/clang++;
-LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib";
-CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" ;
-CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+
+./configure \
+--prefix=$PYPATH/$PYTHONVER \
+--enable-ipv6 \
+--datarootdir=$PYPATH/$PYTHONVER/share \
+--datadir=$PYPATH/$PYTHONVER/share \
+--enable-shared \
+--with-ensurepip \
+--without-gcc \
+--with-valgrind \
+CC=/usr/local/llvm39/bin/clang \
+CXX=/usr/local/llvm39/bin/clang++ \
+LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
+CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
+CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
 MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 make;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
