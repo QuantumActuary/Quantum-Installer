@@ -71,23 +71,22 @@ BOOSTBOTTLE=boost-1.62.0.el_capitan.bottle.1.tar.gz;
 BOOSTPYTHONBOTTLE=boost-python-1.62.0.el_capitan.bottle.1.tar.gz;
 
 # -- Install xcode developer tools
-xcode-select --install;
+xcode-select --install || echo "Continuing...";
 
 # -- Install llvm 3.9 and clang
 if [ ! -f clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz ] ; then
     curl -L -O http://llvm.org/releases/$LLVMVER/clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
 fi
 tar -xf clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
-chmod 744 clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
 if [ -d /usr/local/llvm ] ; then
     rm -rf /usr/local/llvm;
 fi
-mkdir /usr/local/llvm;
 mv clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
+chmod 744 /usr/local/llvm;
 
 # -- Install Valgrind
-curl -L -O ${DOWNLOAD}${VALGRINDBOTTLE};
-brew unlink valgrind;
+curl -O -L ${DOWNLOAD}${VALGRINDBOTTLE};
+brew unlink valgrind || echo "Continuing...";
 brew install ${VALGRINDBOTTLE};
 
 SDK_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('$(xcrun --show-sdk-path)')))");
@@ -95,7 +94,7 @@ MACOS_SDK="-mmacosx-version-min=$OSXVER";
 SYSROOT="$SDK_PATH/MacOSX$OSXVER.sdk"
 
 # -- Get openssl (pip requires it)
-brew install openssl;
+brew upgrade openssl || brew install openssl;
 
 # -- Build googletest
 if [ ! -d googletest ] ; then
@@ -107,7 +106,6 @@ cmake \
 -DCMAKE_C_COMPILER=/usr/local/llvm/bin/clang \
 -DCMAKE_CXX_COMPILER=/usr/local/llvm/bin/clang++ \
 -DCMAKE_OSX_DEPLOYMENT_TARGET=$OSXVER \
--DCMAKE_OSX_SYSROOT="$SYSROOT" \
 -DCMAKE_C_FLAGS_RELEASE="-DNDEBUG" \
 -DCMAKE_CXX_FLAGS_RELEASE="-DNDEBUG -std=c++1y" \
 -DCMAKE_INSTALL_PREFIX=/usr/local/gtest \
@@ -129,7 +127,6 @@ pushd ${PRIMESIEVEFILE};
 ./configure \
 --prefix=/usr/local/primesieve \
 --enable-shared=no \
---with-sysroot="$SYSROOT" \
 CC=/usr/local/llvm/bin/clang \
 CXX=/usr/local/llvm/bin/clang++ \
 LDFLAGS="$MACOS_SDK -stdlib=libc++" \
@@ -141,19 +138,21 @@ popd;
 
 # -- Install Python3
 curl -O -L ${DOWNLOAD}${PYTHON3BOTTLE};
-brew unlink python3;
+brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
 
 # -- Install hdf5
 curl -O -L ${DOWNLOAD}${HDF5BOTTLE};
 brew tap homebrew/science;
+brew unlink hdf5 || echo "Continuing...";
 brew install ${HDF5BOTTLE};
 
 # -- Install Boost
 curl -O -L ${DOWNLOAD}${BOOSTBOTTLE};
-brew unlink boost
+brew unlink boost || echo "Continuing...";
 brew install ${BOOSTBOTTLE}
 
 # -- Build Boost Python
 curl -O -L ${DOWNLOAD}${BOOSTPYTHONBOTTLE};
+brew unlink boost-python || echo "Continuing...";
 brew install ${BOOSTPYTHONBOTTLE};
