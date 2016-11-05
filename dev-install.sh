@@ -140,19 +140,21 @@ popd;
 
 # -- Install Python3
 curl -O -L ${DOWNLOAD}${PYTHON3BOTTLE};
-brew unlink python3;
+brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
 
 # -- Install hdf5
 curl -O -L ${DOWNLOAD}${HDF5BOTTLE};
 brew tap homebrew/science;
+brew unlink hdf5 || echo "Continuing...";
 brew install ${HDF5BOTTLE};
 
 # -- Install Boost
 curl -O -L ${DOWNLOAD}${BOOSTBOTTLE};
-brew unlink boost
+brew unlink boost || echo "Continuing...";
 brew install ${BOOSTBOTTLE}
 
 # -- Build Boost Python
 curl -O -L ${DOWNLOAD}${BOOSTPYTHONBOTTLE};
+brew unlink boost-python || echo "Continuing...";
 brew install ${BOOSTPYTHONBOTTLE};
