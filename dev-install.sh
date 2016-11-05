@@ -52,10 +52,10 @@ cp Platypus-5.1/Platypus.app/Contents/Resources/ScriptExec /usr/local/share/plat
 cp -r Platypus-5.1/Platypus.app/Contents/Resources/MainMenu.nib /usr/local/share/platypus/MainMenu.nib;
 chmod -R 755 /usr/local/share/platypus;
 
-# -- Get brew
-#/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+# -- Update brew or download it if not installed
+brew update || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
-brew update cmake || brew install cmake;
+brew upgrade cmake || brew install cmake;
 
 LLVMVER=3.9.0
 OSXVER=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
