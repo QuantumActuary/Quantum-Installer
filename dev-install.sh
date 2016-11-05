@@ -78,12 +78,11 @@ if [ ! -f clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz ] ; then
     curl -L -O http://llvm.org/releases/$LLVMVER/clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
 fi
 tar -xf clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
-chmod 744 clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
 if [ -d /usr/local/llvm ] ; then
     rm -rf /usr/local/llvm;
 fi
-mkdir /usr/local/llvm;
 mv clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
+chmod 744 /usr/local/llvm;
 
 # -- Install Valgrind
 curl -L -O ${DOWNLOAD}${VALGRINDBOTTLE};
