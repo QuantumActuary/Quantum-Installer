@@ -24,49 +24,41 @@ PYPATH="$SCRIPT_PATH/Kivy.app/Contents/Frameworks/python"
 PYTHON="$PYPATH/$PYTHONVER/bin/python3"
 
 if [ ! -d python3-$PYTHONVER ]; then
-brew unpack --patch --destdir=. python3
-fi
-pushd python3-$PYTHONVER
+    brew unpack --patch --destdir=. python3;
+fi;
+pushd python3-$PYTHONVER;
 
-sudo ./configure \
---prefix=$PYPATH/$PYTHONVER \
---enable-ipv6 \
---datarootdir=$PYPATH/$PYTHONVER/share \
---datadir=$PYPATH/$PYTHONVER/share \
---enable-shared \
---with-ensurepip \
---without-gcc \
---with-valgrind \
-CC=/usr/local/llvm/bin/clang \
-CXX=/usr/local/llvm/bin/clang++ \
-LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
-CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
-CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
+./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+CC=/usr/local/llvm/bin/clang;
+CXX=/usr/local/llvm/bin/clang++;
+LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib";
+CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" ;
+CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
 MACOSX_DEPLOYMENT_TARGET=$OSXVER;
-sudo make;
-sudo make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
+make;
+make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
-    sudo rm -rf $PYPATH/$PYTHONVER/lib/static;
+    rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
-sudo mkdir $PYPATH/$PYTHONVER/lib/static;
-sudo cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
+mkdir $PYPATH/$PYTHONVER/lib/static;
+cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
 pushd $PYPATH/$PYTHONVER/bin;
 if [ -f python ] ; then
-    sudo rm -rf python;
+    rm -rf python;
 fi
 if [ -f pip ] ; then
-    sudo rm -rf pip;
+    rm -rf pip;
 fi
 ln -s python3 python;
 ln -s pip3 pip;
-sudo ./pip install --upgrade pip setuptools;
-sudo ./pip install wheel;
+./pip install --upgrade pip setuptools;
+./pip install wheel;
 popd
 popd
 
-sudo rm -rf $PYPATH/$PYTHONVER/share;
-sudo rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
-sudo chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
+rm -rf $PYPATH/$PYTHONVER/share;
+rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
+chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
