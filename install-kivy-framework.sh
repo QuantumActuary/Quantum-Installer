@@ -70,7 +70,7 @@ sudo chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
-sudo cp -a /usr/local/cellar/boost-python/$BOOSTVER/include/* $PYPATH/$PYTHONVER/include/
+sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/include/* $PYPATH/$PYTHONVER/include/
 sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
 sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
 sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.a $PYPATH/$PYTHONVER/lib/static/libboost_python3-mt.a;
