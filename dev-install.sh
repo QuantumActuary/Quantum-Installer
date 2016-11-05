@@ -86,7 +86,7 @@ chmod 744 /usr/local/llvm;
 
 # -- Install Valgrind
 curl -L -O ${DOWNLOAD}${VALGRINDBOTTLE};
-brew unlink valgrind;
+brew unlink valgrind || echo "Continuing...";
 brew install ${VALGRINDBOTTLE};
 
 SDK_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('$(xcrun --show-sdk-path)')))");
