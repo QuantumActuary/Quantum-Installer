@@ -16,3 +16,7 @@ branches:
 script:
   - chmod 744 dev-install.sh
   - ./dev-install.sh
+  - chmod 744 create-osx-bundle.sh
+  - ./create-osx-bundle.sh
+  - chmod 744 install-kivy-framework.sh
+  - ./install-kivy-framework.sh master
