@@ -106,7 +106,6 @@ cmake \
 -DCMAKE_C_COMPILER=/usr/local/llvm/bin/clang \
 -DCMAKE_CXX_COMPILER=/usr/local/llvm/bin/clang++ \
 -DCMAKE_OSX_DEPLOYMENT_TARGET=$OSXVER \
--DCMAKE_OSX_SYSROOT="$SYSROOT" \
 -DCMAKE_C_FLAGS_RELEASE="-DNDEBUG" \
 -DCMAKE_CXX_FLAGS_RELEASE="-DNDEBUG -std=c++1y" \
 -DCMAKE_INSTALL_PREFIX=/usr/local/gtest \
@@ -128,7 +127,6 @@ pushd ${PRIMESIEVEFILE};
 ./configure \
 --prefix=/usr/local/primesieve \
 --enable-shared=no \
---with-sysroot="$SYSROOT" \
 CC=/usr/local/llvm/bin/clang \
 CXX=/usr/local/llvm/bin/clang++ \
 LDFLAGS="$MACOS_SDK -stdlib=libc++" \
