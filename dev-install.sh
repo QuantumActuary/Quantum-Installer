@@ -71,7 +71,7 @@ BOOSTBOTTLE=boost-1.62.0.el_capitan.bottle.1.tar.gz;
 BOOSTPYTHONBOTTLE=boost-python-1.62.0.el_capitan.bottle.1.tar.gz;
 
 # -- Install xcode developer tools
-xcode-select --install;
+xcode-select --install || echo "Continuing...";
 
 # -- Install llvm 3.9 and clang
 if [ ! -f clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz ] ; then
@@ -95,7 +95,7 @@ MACOS_SDK="-mmacosx-version-min=$OSXVER";
 SYSROOT="$SDK_PATH/MacOSX$OSXVER.sdk"
 
 # -- Get openssl (pip requires it)
-brew install openssl;
+brew upgrade openssl || brew install openssl;
 
 # -- Build googletest
 if [ ! -d googletest ] ; then
