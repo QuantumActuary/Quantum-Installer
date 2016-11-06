@@ -33,13 +33,13 @@ if [ ! -f Keka-1.0.4-intel.dmg ] ; then
 fi
 hdiutil attach Keka-1.0.4-intel.dmg;
 hdiutil attach SDL2-2.0.4.dmg;
-sudo cp -a /Volumes/SDL2/SDL2.framework /Library/Frameworks/;
+sudo cp -a /Volumes/SDL2/SDL2.framework /Library/Frameworks/ || echo "Continuing...";
 hdiutil attach SDL2_image-2.0.1.dmg;
-sudo cp -a /Volumes/SDL2_image/SDL2_image.framework /Library/Frameworks/;
+sudo cp -a /Volumes/SDL2_image/SDL2_image.framework /Library/Frameworks/ || echo "Continuing...";
 hdiutil attach SDL2_ttf-2.0.13.dmg;
-sudo cp -a /Volumes/SDL2_ttf/SDL2_ttf.framework /Library/Frameworks/;
+sudo cp -a /Volumes/SDL2_ttf/SDL2_ttf.framework /Library/Frameworks/ || echo "Continuing...";
 hdiutil attach SDL2_mixer-2.0.1.dmg;
-sudo cp -a /Volumes/SDL2_mixer/SDL2_mixer.framework /Library/Frameworks/;
+sudo cp -a /Volumes/SDL2_mixer/SDL2_mixer.framework /Library/Frameworks/ || echo "Continuing...";
 # Note: fails to overwrite existing installation which causes python3 compile error later.
 sudo installer -package gstreamer-1.0-1.7.1-x86_64.pkg -target /;
 sudo installer -package gstreamer-1.0-devel-1.7.1-x86_64.pkg -target /;
