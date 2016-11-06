@@ -186,8 +186,8 @@ mkdir .kivy/extensions/plugins
 mkdir .kivy/mods
 ./script -m pip install -r requirements.txt
 popd
-cp $SCRIPT_PATH/config.ini $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy
-cp /usr/local/llvm39/lib/libomp.dylib $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy/lib/libiomp5.dylib
+cp $SCRIPT_PATH/data/config.ini $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy
+cp /usr/local/llvm/lib/libomp.dylib $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy/lib/libiomp5.dylib
 
 sudo chmod -R 755 $PYPATH/$PYTHONVER;
 sudo install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
