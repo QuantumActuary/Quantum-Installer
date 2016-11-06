@@ -88,6 +88,7 @@ chmod 744 /usr/local/llvm;
 curl -O -L ${DOWNLOAD}${VALGRINDBOTTLE};
 brew unlink valgrind || echo "Continuing...";
 brew install ${VALGRINDBOTTLE};
+brew link valgrind;
 
 SDK_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('$(xcrun --show-sdk-path)')))");
 MACOS_SDK="-mmacosx-version-min=$OSXVER";
@@ -151,8 +152,10 @@ brew install ${HDF5BOTTLE};
 curl -O -L ${DOWNLOAD}${BOOSTBOTTLE};
 brew unlink boost || echo "Continuing...";
 brew install ${BOOSTBOTTLE}
+brew link boost;
 
 # -- Build Boost Python
 curl -O -L ${DOWNLOAD}${BOOSTPYTHONBOTTLE};
 brew unlink boost-python || echo "Continuing...";
 brew install ${BOOSTPYTHONBOTTLE};
+brew link boost-python;

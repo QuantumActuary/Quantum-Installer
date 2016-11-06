@@ -68,6 +68,7 @@ popd
 rm -rf $PYPATH/$PYTHONVER/share;
 rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
 chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
+brew link python3;
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
