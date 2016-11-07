@@ -2,22 +2,27 @@
 set -x #verbose
 set -e #exit on error
 
+if [ ! -d cache ]; then
+    mkdir cache;
+fi;
+pushd cache;
+
 if [ ! -f aria2-1.19.3-osx-darwin.dmg ] ; then
-    curl -O -L https://github.com/tatsuhiro-t/aria2/releases/download/release-1.19.3/aria2-1.19.3-osx-darwin.dmg;
+    curl -O -L -f https://github.com/tatsuhiro-t/aria2/releases/download/release-1.19.3/aria2-1.19.3-osx-darwin.dmg;
 fi
 hdiutil attach aria2-1.19.3-osx-darwin.dmg;
 sudo installer -package "/Volumes/aria2 1.19.3 Intel/aria2.pkg" -target /;
 if [ ! -f SDL2-2.0.4.dmg ] ; then
-    curl -O -L https://www.libsdl.org/release/SDL2-2.0.4.dmg;
+    curl -O -L -f https://www.libsdl.org/release/SDL2-2.0.4.dmg;
 fi
 if [ ! -f SDL2_image-2.0.1.dmg ] ; then
-    curl -O -L https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.dmg;
+    curl -O -L -f https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.dmg;
 fi
 if [ ! -f SDL2_mixer-2.0.1.dmg ] ; then
-    curl -O -L https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.dmg;
+    curl -O -L -f https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.dmg;
 fi
 if [ ! -f SDL2_ttf-2.0.13.dmg ] ; then
-    curl -O -L https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.13.dmg;
+    curl -O -L -f https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.13.dmg;
 fi
 if [ ! -f gstreamer-1.0-1.7.1-x86_64.pkg ] ; then
     /usr/local/aria2/bin/aria2c -x 10 http://gstreamer.freedesktop.org/data/pkg/osx/1.7.1/gstreamer-1.0-1.7.1-x86_64.pkg;
@@ -26,10 +31,10 @@ if [ ! -f gstreamer-1.0-devel-1.7.1-x86_64.pkg ] ; then
     /usr/local/aria2/bin/aria2c -x 10 http://gstreamer.freedesktop.org/data/pkg/osx/1.7.1/gstreamer-1.0-devel-1.7.1-x86_64.pkg;
 fi
 if [ ! -f platypus.zip ] ; then
-    curl -O -L http://www.sveinbjorn.org/files/software/platypus.zip;
+    curl -O -L -f http://www.sveinbjorn.org/files/software/platypus.zip;
 fi
 if [ ! -f Keka-1.0.4-intel.dmg ] ; then
-    curl -O -L http://www.kekaosx.com/release/Keka-1.0.4-intel.dmg;
+    curl -O -L -f http://www.kekaosx.com/release/Keka-1.0.4-intel.dmg;
 fi
 hdiutil attach Keka-1.0.4-intel.dmg;
 hdiutil attach SDL2-2.0.4.dmg;
@@ -59,23 +64,22 @@ brew upgrade cmake || brew install cmake;
 
 LLVMVER=3.9.0
 OSXVER=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
-
-PRIMESIEVELOC=https://dl.bintray.com/kimwalisch/primesieve/;
-PRIMESIEVEFILE=primesieve-5.6.0;
-
-DOWNLOAD=https://github.com/uclatommy/travis-homebrew-bottle/releases/download/v1.0-beta/
-PYTHON3BOTTLE=python3-3.5.2_3.el_capitan.bottle.1.tar.gz;
-HDF5BOTTLE=hdf5-1.8.17.el_capitan.bottle.tar.gz;
-VALGRINDBOTTLE=valgrind-3.12.0.el_capitan.bottle.1.tar.gz;
-BOOSTBOTTLE=boost-1.62.0.el_capitan.bottle.1.tar.gz;
-BOOSTPYTHONBOTTLE=boost-python-1.62.0.el_capitan.bottle.1.tar.gz;
+if [ $OSXVER = 10.10 ]; then
+    OSXNAME=yosemite;
+elif [ $OSXVER = 10.11 ]; then
+    OSXNAME=el_capitan;
+elif [ $OSXVER = 10.12 ]; then
+    OSXNAME=sierra;
+else
+    OSXNAME=unknown;
+fi;
 
 # -- Install xcode developer tools
 xcode-select --install || echo "Continuing...";
 
 # -- Install llvm 3.9 and clang
 if [ ! -f clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz ] ; then
-    curl -L -O http://llvm.org/releases/$LLVMVER/clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
+    curl -L -O -f http://llvm.org/releases/$LLVMVER/clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
 fi
 tar -xf clang+llvm-$LLVMVER-x86_64-apple-darwin.tar.xz;
 if [ -d /usr/local/llvm ] ; then
@@ -83,19 +87,8 @@ if [ -d /usr/local/llvm ] ; then
 fi
 mv clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
 chmod 744 /usr/local/llvm;
-
-# -- Install Valgrind
-curl -O -L ${DOWNLOAD}${VALGRINDBOTTLE};
-brew unlink valgrind || echo "Continuing...";
-brew install ${VALGRINDBOTTLE};
-brew link valgrind;
-
-SDK_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('$(xcrun --show-sdk-path)')))");
-MACOS_SDK="-mmacosx-version-min=$OSXVER";
-SYSROOT="$SDK_PATH/MacOSX$OSXVER.sdk"
-
-# -- Get openssl (pip requires it)
-brew upgrade openssl || brew install openssl;
+export CC=/usr/local/llvm/bin/clang;
+export CXX=/usr/local/llvm/bin/clang++;
 
 # -- Build googletest
 if [ ! -d googletest ] ; then
@@ -117,8 +110,10 @@ make install;
 popd;
 
 # -- Build primesieve
+PRIMESIEVELOC=https://dl.bintray.com/kimwalisch/primesieve/;
+PRIMESIEVEFILE=primesieve-5.6.0;
 if [ ! -f ${PRIMESIEVEFILE}.tar.gz ] ; then
-    curl -O -L ${PRIMESIEVELOC}${PRIMESIEVEFILE}.tar.gz;
+    curl -O -L -f ${PRIMESIEVELOC}${PRIMESIEVEFILE}.tar.gz;
 fi
 if [ -d ${PRIMESIEVEFILE} ] ; then
     rm -rf ${PRIMESIEVEFILE};
@@ -137,25 +132,163 @@ make;
 make install;
 popd;
 
+DOWNLOAD=https://github.com/uclatommy/travis-homebrew-bottle/releases/download/v1.0-beta/
+
+# -- Install Valgrind
+VALGRIND=3.12.0
+VALGRINDBOTTLE=valgrind-${VALGRIND}.${OSXNAME}.bottle.1.tar.gz;
+BUILDVALGRIND=false;
+OMITVALGRIND=false;
+curl -O -L -f ${DOWNLOAD}${VALGRINDBOTTLE} || brew install $(ls valgrind-${VALGRIND}.${OSXNAME}.bottle*tar.gz) || BUILDVALGRIND=true;
+if [ "$BUILDVALGRIND" = true ]; then
+    rm -f ${VALGRINDBOTTLE};
+    brew uninstall --force valgrind || echo "Continuing...";
+    RETRY=false;
+    brew install --build-bottle valgrind || RETRY=true;
+    if [ "$RETRY" = true ]; then
+        VALGRIND=HEAD;
+        brew install --build-bottle --HEAD valgrind || OMITVALGRIND=true;
+    fi;
+    if [ ! -d valgrind-$VALGRIND ] && [ "$OMITVALGRIND" = false ]; then
+        brew unpack --patch --destdir=. valgrind;
+    fi;
+    if [ "$OMITVALGRIND" = false ]; then
+        pushd valgrind-$VALGRIND;
+        ./autogen.sh;
+        ./configure --disable-dependency-tracking --prefix=/usr/local/Cellar/valgrind/$VALGRIND --enable-only64bit --build=amd64-darwin CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++;
+        make;
+        make install;
+        brew link --overwrite valgrind;
+        popd;
+        brew bottle valgrind;
+    fi;
+fi;
+if [ "$OMITVALGRIND" = false ]; then
+    brew unlink valgrind || echo "Continuing...";
+    brew install ${VALGRINDBOTTLE};
+    brew link --overwrite valgrind;
+fi;
+
+SDK_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('$(xcrun --show-sdk-path)')))");
+MACOS_SDK="-mmacosx-version-min=$OSXVER";
+SYSROOT="$SDK_PATH/MacOSX$OSXVER.sdk"
+
+# -- Get openssl (pip requires it)
+brew upgrade openssl || brew install openssl;
+
 # -- Install Python3
-curl -O -L ${DOWNLOAD}${PYTHON3BOTTLE};
+BUILDPYTHON=false;
+PYTHON=3.5.2;
+PYTHONVER=${PYTHON}_3; #brew's python formula puts that _3 to denote that it can be used to build a bottle
+PYTHON3BOTTLE=python3-${PYTHONVER}.${OSXNAME}.bottle.1.tar.gz;
+curl -O -L -f ${DOWNLOAD}${PYTHON3BOTTLE} || brew install $(ls python3-${PYTHONVER}.${OSXNAME}.bottle*tar.gz) || BUILDPYTHON=true;
+if [ "$BUILDPYTHON" = true ]; then
+    brew uninstall --force python3 || echo "Continuing...";
+    brew install --build-bottle python3;
+    if [ ! -d python3-$PYTHON ] ; then
+        brew unpack --patch --destdir=. python3;
+    fi;
+    pushd python3-$PYTHON;
+    if [ "$OMITVALGRIND" = false ]; then
+        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+    else
+        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+
+    fi;
+    CC=/usr/local/llvm/bin/clang;
+    CXX=/usr/local/llvm/bin/clang++;
+    LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib";
+    CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" ;
+    CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
+    make;
+    make install PYTHONAPPSDIR=/usr/local/Cellar/python3/$PYTHONVER;
+    brew link --overwrite python3;
+    popd;
+    brew bottle python3;
+fi;
 brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
 
 # -- Install hdf5
-curl -O -L ${DOWNLOAD}${HDF5BOTTLE};
+BUILDHDF5=false;
+HDF5=1.8.17
+HDF5BOTTLE=hdf5-${HDF5}.${OSXNAME}.bottle.tar.gz;
+curl -O -L -f ${DOWNLOAD}${HDF5BOTTLE} || brew install $(ls hdf5-${HDF5}.${OSXNAME}.bottle*tar.gz) || BUILDHDF5=true;
 brew tap homebrew/science;
+if [ "$BUILDHDF5" = true ]; then
+    brew uninstall --force hdf5 || echo "Continuing...";
+    brew install --build-bottle hdf5;
+    if [ ! -d hdf5-$HDF5 ] ; then
+        brew unpack --patch --destdir=. hdf5;
+    fi;
+    pushd hdf5-$HDF5;
+    ./configure --prefix=/usr/local/Cellar/hdf5/$HDF5 --enable-production --enable-debug=no --disable-dependency-tracking --with-zlib=/usr --with-szlib=/usr/local/opt/szip --enable-static=yes --enable-shared=yes --enable-cxx --disable-fortran CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ CFLAGS="$MACOS_SDK" CPPFLAGS="$MACOS_SDK" LDFLAGS="$MACOS_SDK";
+    make;
+    make install;
+    popd;
+    brew bottle hdf5;
+fi;
 brew unlink hdf5 || echo "Continuing...";
-brew install ${HDF5BOTTLE};
+brew install ${HDF5BOTTLE} || brew install hdf5-${HDF5}.${OSXNAME}.bottle*tar.gz;
+brew link --overwrite hdf5;
 
 # -- Install Boost
-curl -O -L ${DOWNLOAD}${BOOSTBOTTLE};
+BOOSTVER=1.62.0;
+BUILDBOOST=false
+BOOSTBOTTLE=boost-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
+curl -O -L -f ${DOWNLOAD}${BOOSTBOTTLE} || brew install $(ls boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOST=true;
+if [ "$BUILDBOOST" = true ]; then
+    brew uninstall --force boost || echo "Continuing...";
+    brew install --build-bottle boost;
+    if [ ! -d boost-$BOOSTVER ]; then
+        brew unpack --patch --destdir=. boost;
+    fi
+    pushd boost-$BOOSTVER;
+    ./bootstrap.sh --prefix=/usr/local/Cellar/boost/$BOOSTVER --libdir=/usr/local/Cellar/boost/$BOOSTVER/lib --without-icu --without-libraries=python,mpi > boost_bootstrap.log;
+    {
+    echo "using darwin : : /usr/local/llvm/bin/clang++"
+    echo "             : <cxxflags>$MACOS_SDK <linkflags>$MACOS_SDK <compileflags>$MACOS_SDK ;"
+    echo "using python : 3.5"
+    echo "             : /usr/local/bin/python3.5"
+    echo "             : /usr/local/Cellar/python3/$PYTHONVER/include/python3.5m ;"
+    } > user-config.jam;
+    ./b2 headers;
+    ./b2 --prefix=/usr/local/Cellar/boost/$BOOSTVER --libdir=/usr/local/Cellar/boost/$BOOSTVER/lib -d2 -j4 --layout=tagged --user-config=user-config.jam install threading=multi,single link=shared,static;
+    popd;
+    brew link --overwrite boost;
+    brew bottle boost;
+fi;
 brew unlink boost || echo "Continuing...";
-brew install ${BOOSTBOTTLE}
-brew link boost;
+brew install ${BOOSTBOTTLE} || brew install boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
+brew link --overwrite boost;
 
 # -- Build Boost Python
-curl -O -L ${DOWNLOAD}${BOOSTPYTHONBOTTLE};
+BUILDBOOSTPYTHON=false
+BOOSTPYTHONBOTTLE=boost-python-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
+curl -O -L -f ${DOWNLOAD}${BOOSTPYTHONBOTTLE} || brew install $(ls boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOSTPYTHON=true;
+if [ "$BUILDBOOSTPYTHON" = true ]; then
+    brew uninstall --force boost-python || echo "Continuing...";
+    brew install --build-bottle boost-python;
+    if [ ! -d boost-python-$BOOSTVER ]; then
+        brew unpack --patch --destdir=. boost-python;
+    fi;
+    pushd boost-python-$BOOSTVER
+    ./bootstrap.sh --prefix=/usr/local/Cellar/boost-python/$BOOSTVER --libdir=/usr/local/Cellar/boost-python/$BOOSTVER/lib --with-libraries=python --with-python=python3 --with-python-root=/usr/local/Cellar/python3/$PYTHONVER;
+    {
+    echo "using darwin : : /usr/local/llvm/bin/clang++"
+    echo "             : <cxxflags>$MACOS_SDK <linkflags>$MACOS_SDK <compileflags>$MACOS_SDK ;"
+    echo "using python : 3.5"
+    echo "             : /usr/local/bin/python3.5"
+    echo "             : /usr/local/Cellar/python3/$PYTHONVER/include/python3.5m ;"
+    } > user-config.jam;
+    ./b2 --build-dir=build-python3 --stagedir=stage-python3 python=3.5 --prefix=/usr/local/Cellar/boost-python/$BOOSTVER --libdir=/usr/local/Cellar/boost-python/$BOOSTVER/lib -d2 -j4 --layout=tagged --user-config=user-config.jam threading=multi,single link=shared,static install;
+    brew link --overwrite boost-python;
+    popd;
+    brew bottle boost-python;
+fi;
 brew unlink boost-python || echo "Continuing...";
-brew install ${BOOSTPYTHONBOTTLE};
-brew link boost-python;
+brew install ${BOOSTPYTHONBOTTLE} || brew install boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
+brew link --overwrite boost-python;
+
+popd; #cache
