@@ -151,7 +151,7 @@ mv kivy-$VERSION kivy;
 rm -rf $VERSION.zip;
 
 cd kivy;
-USE_SDL2=1 CC=/usr/local/bin/clang make;
+USE_SDL2=1 CC=/usr/local/bin/clang make > /dev/null;
 popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources
 
 # --- Relocation
