@@ -46,7 +46,6 @@ if [ "$OMITVALGRIND" = true ]; then
     --enable-shared \
     --with-ensurepip \
     --without-gcc \
-    --enable-silent-rules \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
@@ -63,7 +62,6 @@ else
     --with-ensurepip \
     --without-gcc \
     --with-valgrind \
-    --enable-silent-rules \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
@@ -72,7 +70,7 @@ else
     MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 fi;
 echo "AM_SILENT_RULES([yes])" >> configure.ac;
-make;
+make V=0;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
