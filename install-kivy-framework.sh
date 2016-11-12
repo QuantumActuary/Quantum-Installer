@@ -46,6 +46,7 @@ if [ "$OMITVALGRIND" = true ]; then
     --enable-shared \
     --with-ensurepip \
     --without-gcc \
+    --enable-silent-rules \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
@@ -62,6 +63,7 @@ else
     --with-ensurepip \
     --without-gcc \
     --with-valgrind \
+    --enable-silent-rules \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
