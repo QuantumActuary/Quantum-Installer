@@ -33,10 +33,10 @@ fi
 if [ ! -f platypus.zip ] ; then
     curl -O -L -f http://www.sveinbjorn.org/files/software/platypus.zip;
 fi
-if [ ! -f Keka-1.0.4-intel.dmg ] ; then
-    curl -O -L -f http://www.kekaosx.com/release/Keka-1.0.4-intel.dmg;
+if [ ! -f Keka-1.0.4-snow.dmg ] ; then
+    curl -O -L -f http://download.kekaosx.com/snow/Keka-1.0.4-snow.dmg;
 fi
-hdiutil attach Keka-1.0.4-intel.dmg;
+hdiutil attach Keka-1.0.4-snow.dmg;
 hdiutil attach SDL2-2.0.4.dmg;
 sudo cp -a /Volumes/SDL2/SDL2.framework /Library/Frameworks/ || echo "Continuing...";
 hdiutil attach SDL2_image-2.0.1.dmg;
