@@ -209,6 +209,7 @@ if [ "$BUILDPYTHON" = true ]; then
 fi;
 brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
+brew link --overwrite python3;
 
 # -- Install hdf5
 BUILDHDF5=false;
