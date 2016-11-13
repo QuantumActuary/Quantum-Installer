@@ -69,8 +69,8 @@ else
     CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
     MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 fi;
-make;
-make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
+make > /dev/null;
+make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER > /dev/null;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
@@ -85,8 +85,8 @@ if [ -f pip ] ; then
 fi
 ln -s python3 python;
 ln -s pip3 pip;
-pip install --upgrade pip setuptools;
-pip install wheel;
+./pip install --upgrade pip setuptools > /dev/null;
+./pip install wheel > /dev/null;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
