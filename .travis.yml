@@ -16,4 +16,4 @@ branches:
 script:
   - ./dev-install.sh
   - ./create-osx-bundle.sh
-  - travis_wait 20 ./install-kivy-framework.sh master > /dev/null
+  - ./install-kivy-framework.sh master
