@@ -291,5 +291,7 @@ fi;
 brew unlink boost-python || echo "Continuing...";
 brew install ${BOOSTPYTHONBOTTLE} || brew install boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
 brew link --overwrite boost-python;
+brew info boost-python
+ls -l /usr/local/Cellar/boost-python/$BOOSTVER
 
 popd; #cache
