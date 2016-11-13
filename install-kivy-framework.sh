@@ -28,7 +28,6 @@ if [ ! -d cache ]; then
 fi;
 pushd cache;
 
-brew unlink python3 || echo "Continuing...";
 if [ ! -d python3-$PYTHONVER ]; then
     brew unpack --patch --destdir=. python3;
 fi;
