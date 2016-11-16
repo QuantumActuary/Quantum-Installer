@@ -83,10 +83,10 @@ fi
 if [ -f pip ] ; then
     rm -rf pip;
 fi
-#ln -s python3 python;
-#ln -s pip3 pip;
-#./pip install --upgrade pip setuptools;
-#./pip install wheel;
+ln -s python3 python;
+ln -s pip3 pip;
+./pip install --upgrade pip setuptools;
+./pip install wheel;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
