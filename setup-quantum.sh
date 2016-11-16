@@ -28,6 +28,7 @@ fi
 git clone https://github.com/uclatommy/mogwai.git;
 pushd mogwai;
 kivy -m setup install;
+popd; #mogwai
 
 # -- Install portable HDF5 and tables
 # Note: tables comes with a suite of tests you can use to test the installation:
@@ -37,5 +38,13 @@ cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib /Applications/Quantum.app/co
 cp -a /usr/local/Cellar/hdf5/*/include/* /Applications/Quantum.app/contents/resources/.kivy/include/
 install_name_tool -id @executable_path/.kivy/lib/libhdf5.10.dylib /Applications/Quantum.app/contents/resources/.kivy/lib/libhdf5.10.dylib
 kivy -m pip install --install-option='--hdf5=/Applications/Quantum.app/contents/resources/.kivy' tables
-popd;
+
+# -- Install Quantum module
+# Build the Quantum python extension and copy all necessary headers for building plugins
+git clone https://github.com/uclatommy/quantum.git
+
+
+# -- Install plugins
+
+popd; #cache
 echo "Done!";
