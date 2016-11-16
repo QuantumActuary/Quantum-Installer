@@ -22,7 +22,6 @@ SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SC
 OSXRELOCATOR="osxrelocator"
 PYPATH="$SCRIPT_PATH/Kivy.app/Contents/Frameworks/python"
 PYTHON="$PYPATH/$PYTHONVER/bin/python3"
-export PYTHONHOME=$PYTHON
 
 if [ ! -d cache ]; then
     mkdir cache;
