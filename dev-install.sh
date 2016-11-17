@@ -210,6 +210,7 @@ fi;
 brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
 brew link --overwrite python3;
+pip3 install --upgrade pip setuptools wheel;
 
 # -- Install hdf5
 BUILDHDF5=false;
