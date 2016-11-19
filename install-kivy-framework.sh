@@ -29,9 +29,10 @@ if [ ! -d cache ]; then
 fi;
 pushd cache;
 
-if [ ! -d python3-$PYTHONVER ]; then
-    brew unpack --patch --destdir=. python3;
+if [ -d python3-$PYTHONVER ]; then
+    rm -r python3-$PYTHONVER;
 fi;
+brew unpack --patch --destdir=. python3;
 pushd python3-$PYTHONVER;
 
 OMITVALGRIND=false;
@@ -50,7 +51,7 @@ if [ "$OMITVALGRIND" = false ]; then
 else
     ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc;
 fi;
-make;
+make > /dev/null;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
