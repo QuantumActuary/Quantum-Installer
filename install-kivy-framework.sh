@@ -44,8 +44,14 @@ if [ "$OMITVALGRIND" = false ]; then
 else
     ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
 fi;
-make > /dev/null;
-make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER > /dev/null;
+CC=/usr/local/llvm/bin/clang;
+CXX=/usr/local/llvm/bin/clang++;
+LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib";
+CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" ;
+CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
+MACOSX_DEPLOYMENT_TARGET=$OSXVER;
+make;
+make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
@@ -62,7 +68,6 @@ ln -s python3 python;
 ln -s pip3 pip;
 ./pip install --upgrade pip setuptools;
 ./pip install wheel;
-./pip install cython==0.23;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
