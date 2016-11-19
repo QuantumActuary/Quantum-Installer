@@ -96,11 +96,11 @@ brew link python3;
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
-sudo cp -a /usr/local/Cellar/boost/$BOOSTVER/include/boost $PYPATH/$PYTHONVER/include
-sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
-sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
-sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.a $PYPATH/$PYTHONVER/lib/static/libboost_python3-mt.a;
-sudo cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.a $PYPATH/$PYTHONVER/lib/static/libboost_python3.a;
+cp -a /usr/local/Cellar/boost/$BOOSTVER/include/boost $PYPATH/$PYTHONVER/include
+cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
+cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
+cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.a $PYPATH/$PYTHONVER/lib/static/libboost_python3-mt.a;
+cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.a $PYPATH/$PYTHONVER/lib/static/libboost_python3.a;
 
 # --- Python resources
 cp ${SCRIPT_PATH}/data/requirements.txt ${SCRIPT_PATH}/Kivy.app/Contents/Resources/requirements.txt;
@@ -213,11 +213,11 @@ cp $SCRIPT_PATH/data/config.ini $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy;
 cp /usr/local/llvm/lib/libomp.dylib $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy/lib/libiomp5.dylib;
 
 sudo chmod -R 755 $PYPATH/$PYTHONVER;
-sudo install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
-sudo install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m;
-sudo install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m
-sudo install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
-sudo install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
+install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m;
+install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
 pushd $PYPATH/$PYTHONVER;
 ln -s ../../../Frameworks Frameworks;
 popd; #$PYPATH/$PYTHONVER

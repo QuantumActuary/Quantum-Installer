@@ -19,6 +19,9 @@ branches:
   only:
     - master
 
+install:
+  - sudo chown -R $(whoami) /usr/local && ls -l /usr;
+
 script:
   - ./dev-install.sh
   - ./create-osx-bundle.sh
