@@ -48,7 +48,7 @@ sudo cp -a /Volumes/SDL2_mixer/SDL2_mixer.framework /Library/Frameworks/ || echo
 # Note: fails to overwrite existing installation which causes python3 compile error later.
 sudo installer -package gstreamer-1.0-1.7.1-x86_64.pkg -target /;
 sudo installer -package gstreamer-1.0-devel-1.7.1-x86_64.pkg -target /;
-unzip -f -o platypus.zip;
+unzip -o platypus.zip;
 mkdir -p /usr/local/bin;
 mkdir -p /usr/local/share/platypus;
 mkdir -p /usr/local/man/platypus;
