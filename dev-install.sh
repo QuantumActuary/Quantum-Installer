@@ -87,8 +87,14 @@ if [ -d /usr/local/llvm ] ; then
 fi
 mv clang+llvm-$LLVMVER-x86_64-apple-darwin /usr/local/llvm;
 chmod 744 /usr/local/llvm;
-export CC=/usr/local/llvm/bin/clang;
-export CXX=/usr/local/llvm/bin/clang++;
+if [ -f /usr/local/bin/clang ]; then
+    rm -rf /usr/local/bin/clang;
+fi;
+if [ -f /usr/local/bin/clang++ ]; then
+    rm -rf /usr/local/bin/clang++;
+fi;
+ln -s /usr/local/llvm/bin/clang /usr/local/bin/clang;
+ln -s /usr/local/llvm/bin/clang++ /usr/local/bin/clang++;
 
 # -- Build googletest
 if [ ! -d googletest ] ; then
@@ -132,7 +138,7 @@ make;
 make install;
 popd;
 
-DOWNLOAD=https://github.com/uclatommy/travis-homebrew-bottle/releases/download/v1.0-beta/
+DOWNLOAD=https://github.com/uclatommy/travis-homebrew-bottle/releases/download/v1.1-beta/
 
 # -- Install Valgrind
 VALGRIND=3.12.0
@@ -238,11 +244,12 @@ brew link --overwrite hdf5;
 # -- Install Boost
 BOOSTVER=1.62.0;
 BUILDBOOST=false
+BOOSTOVERRIDE=true #set to true if you want to use vanilla boost.
 BOOSTBOTTLE=boost-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTBOTTLE} || brew install $(ls boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOST=true;
-if [ "$BUILDBOOST" = true ]; then
+if [ "$BUILDBOOST" = true && "$BOOSTOVERRIDE" = false ]; then
     brew uninstall --force boost || echo "Continuing...";
-    brew install --build-bottle boost;
+    brew install --build-bottle boost --c++11;
     if [ ! -d boost-$BOOSTVER ]; then
         brew unpack --patch --destdir=. boost;
     fi
@@ -260,10 +267,16 @@ if [ "$BUILDBOOST" = true ]; then
     popd;
     brew link --overwrite boost;
     brew bottle boost;
+else
+    if ["$BOOSTOVERRIDE" = true ]; then
+        brew upgrade boost || brew install boost;
+    else
+        brew unlink boost || echo "Continuing...";
+        brew install ${BOOSTBOTTLE} || brew install boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
+        brew link --overwrite boost;
+    fi;
 fi;
-brew unlink boost || echo "Continuing...";
-brew install ${BOOSTBOTTLE} || brew install boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
-brew link --overwrite boost;
+
 
 # -- Build Boost Python
 BUILDBOOSTPYTHON=false
@@ -271,7 +284,7 @@ BOOSTPYTHONBOTTLE=boost-python-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTPYTHONBOTTLE} || brew install $(ls boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOSTPYTHON=true;
 if [ "$BUILDBOOSTPYTHON" = true ]; then
     brew uninstall --force boost-python || echo "Continuing...";
-    brew install --build-bottle boost-python;
+    brew install --build-bottle boost-python --c++11 --with-python3 --without-python;
     if [ ! -d boost-python-$BOOSTVER ]; then
         brew unpack --patch --destdir=. boost-python;
     fi;
