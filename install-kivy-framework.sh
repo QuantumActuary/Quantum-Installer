@@ -62,6 +62,7 @@ ln -s python3 python;
 ln -s pip3 pip;
 ./pip install --upgrade pip setuptools;
 ./pip install wheel;
+./pip install cython==0.23;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
@@ -92,7 +93,7 @@ echo "-- Install dependencies"
 source venv/bin/activate
 pip3 install --upgrade pip setuptools;
 pip3 install wheel;
-pip3 install cython==0.23;
+pip3 install cython==0.23 || echo "Skip cython...";
 pip3 install pygments docutils;
 pip3 install git+http://github.com/tito/osxrelocator;
 pip3 install virtualenv;
