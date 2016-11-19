@@ -113,17 +113,17 @@ echo "-- Create a virtualenv"
 if [ -d venv ] ; then
     rm -rf venv;
 fi
-$PYTHON -m venv venv;
+python3 -m venv venv;
 
 echo "-- Install dependencies"
 source venv/bin/activate
-pip install --upgrade pip setuptools;
-pip install wheel;
-pip install cython==0.23;
-pip install pygments docutils;
-pip install git+http://github.com/tito/osxrelocator;
-pip install virtualenv;
-pip install -r requirements.txt;
+pip3 install --upgrade pip setuptools;
+pip3 install wheel;
+pip3 install cython==0.23;
+pip3 install pygments docutils;
+pip3 install git+http://github.com/tito/osxrelocator;
+pip3 install virtualenv;
+pip3 install -r requirements.txt;
 
 echo "-- Link python to the right location for relocation"
 if [ -f ./python ] ; then
