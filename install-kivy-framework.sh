@@ -59,16 +59,17 @@ fi
 mkdir $PYPATH/$PYTHONVER/lib/static;
 cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
 pushd $PYPATH/$PYTHONVER/bin;
-if [ -f python ] ; then
-    rm -rf python;
-fi
-if [ -f pip ] ; then
-    rm -rf pip;
-fi
-ln -s python3 python;
-ln -s pip3 pip;
-pip3 install --upgrade pip setuptools;
-pip3 install wheel;
+#if [ -f python ] ; then
+#    rm -rf python;
+#fi
+#if [ -f pip ] ; then
+#    rm -rf pip;
+#fi
+#ln -s python3 python;
+#ln -s pip3 pip;
+ls
+pip install --upgrade pip setuptools;
+pip install wheel;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
