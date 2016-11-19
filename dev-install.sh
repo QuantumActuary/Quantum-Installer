@@ -181,6 +181,7 @@ SYSROOT="$SDK_PATH/MacOSX$OSXVER.sdk"
 
 # -- Get openssl (pip requires it)
 brew upgrade openssl || brew install openssl;
+brew upgrade readline || brew install readline;
 
 # -- Install Python3
 BUILDPYTHON=false;
