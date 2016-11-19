@@ -67,8 +67,8 @@ if [ -f pip ] ; then
 fi
 ln -s python3 python;
 ln -s pip3 pip;
-./pip install --upgrade pip setuptools;
-./pip install wheel;
+pip3 install --upgrade pip setuptools;
+pip3 install wheel;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
