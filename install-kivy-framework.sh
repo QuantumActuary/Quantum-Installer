@@ -39,37 +39,10 @@ brew list valgrind || OMITVALGRIND=true; #detect valgrind
 
 brew unlink python3;
 
-if [ "$OMITVALGRIND" = true ]; then
-    ./configure \
-    --prefix=$PYPATH/$PYTHONVER \
-    --enable-ipv6 \
-    --datarootdir=$PYPATH/$PYTHONVER/share \
-    --datadir=$PYPATH/$PYTHONVER/share \
-    --enable-shared \
-    --with-ensurepip \
-    --without-gcc \
-    CC=/usr/local/llvm/bin/clang \
-    CXX=/usr/local/llvm/bin/clang++ \
-    LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
-    CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
-    CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
-    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
+if [ "$OMITVALGRIND" = false ]; then
+    ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
 else
-    ./configure \
-    --prefix=$PYPATH/$PYTHONVER \
-    --enable-ipv6 \
-    --datarootdir=$PYPATH/$PYTHONVER/share \
-    --datadir=$PYPATH/$PYTHONVER/share \
-    --enable-shared \
-    --with-ensurepip \
-    --without-gcc \
-    --with-valgrind \
-    CC=/usr/local/llvm/bin/clang \
-    CXX=/usr/local/llvm/bin/clang++ \
-    LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" \
-    CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
-    CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" \
-    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
+    ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ LDFLAGS="$MACOS_SDK -L/usr/local/opt/openssl/lib" CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK" CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include -I/usr/local/opt/openssl/include $MACOS_SDK";
 fi;
 make > /dev/null;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER > /dev/null;
