@@ -52,7 +52,7 @@ else
     ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc;
 fi;
 make > /dev/null;
-make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
+make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER > /dev/null;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
