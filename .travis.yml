@@ -1,11 +1,12 @@
-sudo: false
-
 matrix:
   fast_finish: true
   include:
     - language: cpp
       os: osx
       osx_image: xcode8
+    - language: cpp
+      os: osx
+      osx_image: xcode8.1
 
 cache:
   timeout: 1000
