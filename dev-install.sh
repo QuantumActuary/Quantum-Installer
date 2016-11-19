@@ -247,7 +247,7 @@ BUILDBOOST=false
 BOOSTOVERRIDE=true #set to true if you want to use vanilla boost.
 BOOSTBOTTLE=boost-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTBOTTLE} || brew install $(ls boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOST=true;
-if [ "$BUILDBOOST" = true && "$BOOSTOVERRIDE" = false ]; then
+if [ "$BUILDBOOST" = true ] && [ "$BOOSTOVERRIDE" = false ]; then
     brew uninstall --force boost || echo "Continuing...";
     brew install --build-bottle boost --c++11;
     if [ ! -d boost-$BOOSTVER ]; then
@@ -268,7 +268,7 @@ if [ "$BUILDBOOST" = true && "$BOOSTOVERRIDE" = false ]; then
     brew link --overwrite boost;
     brew bottle boost;
 else
-    if ["$BOOSTOVERRIDE" = true ]; then
+    if [ "$BOOSTOVERRIDE" = true ]; then
         brew upgrade boost || brew install boost;
     else
         brew unlink boost || echo "Continuing...";
