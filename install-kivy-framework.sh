@@ -37,6 +37,8 @@ pushd python3-$PYTHONVER;
 OMITVALGRIND=false;
 brew list valgrind || OMITVALGRIND=true; #detect valgrind
 
+brew unlink python3;
+
 if [ "$OMITVALGRIND" = true ]; then
     ./configure \
     --prefix=$PYPATH/$PYTHONVER \
