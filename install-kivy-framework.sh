@@ -62,9 +62,10 @@ pushd $PYPATH/$PYTHONVER/bin;
 #if [ -f python ] ; then
 #    rm -rf python;
 #fi
-#if [ -f pip ] ; then
+if [ ! -f pip ] ; then
 #    rm -rf pip;
-#fi
+    curl -L -O https://bootstrap.pypa.io/get-pip.py | python
+fi;
 #ln -s python3 python;
 #ln -s pip3 pip;
 ls
