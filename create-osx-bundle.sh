@@ -16,6 +16,9 @@ SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SC
 OSXRELOCATOR="osxrelocator"
 
 echo "-- Create initial Kivy.app package"
+if [ -d Kivy.app ]; then
+    rm -rf Kivy.app;
+fi;
 $PLATYPUS -DBR -x -y \
     -i "$SCRIPT_PATH/data/icon.icns" \
     -a "Kivy" \

@@ -30,7 +30,7 @@ fi;
 pushd cache;
 
 if [ -d python3-$PYTHONVER ]; then
-    rm -r python3-$PYTHONVER;
+    sudo rm -rf python3-$PYTHONVER;
 fi;
 brew unpack --patch --destdir=. python3;
 pushd python3-$PYTHONVER;
@@ -38,46 +38,65 @@ pushd python3-$PYTHONVER;
 OMITVALGRIND=false;
 brew list valgrind || OMITVALGRIND=true; #detect valgrind
 
-brew unlink python3;
-
-CC=/usr/local/llvm/bin/clang;
-CXX=/usr/local/llvm/bin/clang++;
-LDFLAGS="$MACOS_SDK -L$(brew --prefix openssl)/lib -L$(brew --prefix sqlite3)/lib";
-CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" ;
-CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK";
-    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 if [ "$OMITVALGRIND" = false ]; then
-    ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind;
+    ./configure \
+    --prefix=$PYPATH/$PYTHONVER \
+    --enable-ipv6 \
+    --datarootdir=$PYPATH/$PYTHONVER/share \
+    --datadir=$PYPATH/$PYTHONVER/share \
+    --enable-shared \
+    --with-ensurepip=install \
+    --without-gcc \
+    --with-valgrind \
+    CC=/usr/local/llvm/bin/clang \
+    CXX=/usr/local/llvm/bin/clang++ \
+    LDFLAGS="$MACOS_SDK -L$(brew --prefix openssl)/lib -L$(brew --prefix sqlite3)/lib" \
+    CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
+    CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
+    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 else
-    ./configure --prefix=$PYPATH/$PYTHONVER --enable-ipv6 --datarootdir=$PYPATH/$PYTHONVER/share --datadir=$PYPATH/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc;
+    ./configure \
+    --prefix=$PYPATH/$PYTHONVER \
+    --enable-ipv6 \
+    --datarootdir=$PYPATH/$PYTHONVER/share \
+    --datadir=$PYPATH/$PYTHONVER/share \
+    --enable-shared \
+    --with-ensurepip=install \
+    --without-gcc \
+    CC=/usr/local/llvm/bin/clang \
+    CXX=/usr/local/llvm/bin/clang++ \
+    LDFLAGS="$MACOS_SDK -L$(brew --prefix openssl)/lib -L$(brew --prefix sqlite3)/lib" \
+    CPPFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
+    CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
+    MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 fi;
-make > /dev/null;
-make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER > /dev/null;
+make;
+make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
 mkdir $PYPATH/$PYTHONVER/lib/static;
 cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
 pushd $PYPATH/$PYTHONVER/bin;
-#if [ -f python ] ; then
-#    rm -rf python;
-#fi
-if [ ! -f pip ] ; then
-#    rm -rf pip;
-    curl -L -O https://bootstrap.pypa.io/get-pip.py | python
+if [ -f python ] ; then
+    rm -rf python;
+fi
+if [ -f pip ] ; then
+    rm -rf pip;
+#    curl -L -O https://bootstrap.pypa.io/get-pip.py | python
 fi;
-#ln -s python3 python;
-#ln -s pip3 pip;
+ln -s python3 python;
+ln -s pip3 pip;
 ls
-pip install --upgrade pip setuptools;
-pip install wheel;
+./pip install --upgrade pip setuptools;
+./pip install wheel;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
 rm -rf $PYPATH/$PYTHONVER/share;
 rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
 chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
-brew link python3;
+#brew link python3;
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
@@ -95,17 +114,17 @@ echo "-- Create a virtualenv"
 if [ -d venv ] ; then
     rm -rf venv;
 fi
-python3 -m venv venv;
+$PYTHON -m venv venv;
 
 echo "-- Install dependencies"
 source venv/bin/activate
-pip3 install --upgrade pip setuptools;
-pip3 install wheel;
-pip3 install cython==0.23 || echo "Skip cython...";
-pip3 install pygments docutils;
-pip3 install git+http://github.com/tito/osxrelocator;
-pip3 install virtualenv;
-pip3 install -r requirements.txt;
+pip install --upgrade pip setuptools;
+pip install wheel;
+pip install cython==0.23 || echo "Skip cython...";
+pip install pygments docutils;
+pip install git+http://github.com/tito/osxrelocator;
+pip install virtualenv;
+pip install -r requirements.txt;
 
 echo "-- Link python to the right location for relocation"
 if [ -f ./python ] ; then
@@ -135,7 +154,7 @@ mv kivy-$VERSION kivy;
 rm -rf $VERSION.zip;
 
 cd kivy;
-USE_SDL2=1 CC=/usr/local/bin/clang make > /dev/null;
+USE_SDL2=1 CC=/usr/local/bin/clang make;
 popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources
 
 # --- Relocation
