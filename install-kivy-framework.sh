@@ -16,7 +16,7 @@ if([ -h "${SCRIPT_PATH}" ]) then
 while([ -h "${SCRIPT_PATH}" ]) do SCRIPT_PATH=`readlink "${SCRIPT_PATH}"`; done
 fi
 
-MACOS_SDK="-mmacosx-version-min=$OSXVER"
+MACOS_SDK="" #"-mmacosx-version-min=$OSXVER"
 
 SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SCRIPT_PATH}')))")
 OSXRELOCATOR="osxrelocator"
