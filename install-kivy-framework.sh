@@ -29,7 +29,7 @@ fi;
 pushd cache;
 
 if [ -d python3-$PYTHONVER ]; then
-    sudo rm -rf python3-$PYTHONVER;
+    rm -drf python3-$PYTHONVER;
 fi;
 brew unpack --patch --destdir=. python3;
 pushd python3-$PYTHONVER;
@@ -37,6 +37,7 @@ pushd python3-$PYTHONVER;
 OMITVALGRIND=false;
 brew list valgrind || OMITVALGRIND=true; #detect valgrind
 
+# -- Build Python in Kivy.app
 if [ "$OMITVALGRIND" = false ]; then
     ./configure \
     --prefix=$PYPATH/$PYTHONVER \
@@ -69,7 +70,7 @@ else
     CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
     MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 fi;
-sudo make;
+make;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
