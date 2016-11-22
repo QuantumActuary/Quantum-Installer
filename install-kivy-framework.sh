@@ -22,7 +22,6 @@ SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SC
 OSXRELOCATOR="osxrelocator"
 PYPATH="$SCRIPT_PATH/Kivy.app/Contents/Frameworks/python"
 PYTHON="$PYPATH/$PYTHONVER/bin/python3"
-export PYTHONHOME=$PYPATH/$PYTHONVER
 
 if [ ! -d cache ]; then
     mkdir cache;
@@ -46,7 +45,7 @@ if [ "$OMITVALGRIND" = false ]; then
     --datadir=$PYPATH/$PYTHONVER/share \
     --enable-shared \
     --with-ensurepip=install \
-    --without-gcc \
+    --with-gcc \
     --with-valgrind \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
@@ -62,7 +61,7 @@ else
     --datadir=$PYPATH/$PYTHONVER/share \
     --enable-shared \
     --with-ensurepip=install \
-    --without-gcc \
+    --with-gcc \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L$(brew --prefix openssl)/lib -L$(brew --prefix sqlite3)/lib" \
