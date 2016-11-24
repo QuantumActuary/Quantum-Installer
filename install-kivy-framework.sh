@@ -46,7 +46,7 @@ if [ "$OMITVALGRIND" = false ]; then
     --datadir=$PYPATH/$PYTHONVER/share \
     --enable-shared \
     --with-ensurepip=install \
-    --with-gcc \
+    --without-gcc \
     --with-valgrind \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
@@ -62,7 +62,7 @@ else
     --datadir=$PYPATH/$PYTHONVER/share \
     --enable-shared \
     --with-ensurepip=install \
-    --with-gcc \
+    --without-gcc \
     CC=/usr/local/llvm/bin/clang \
     CXX=/usr/local/llvm/bin/clang++ \
     LDFLAGS="$MACOS_SDK -L$(brew --prefix openssl)/lib -L$(brew --prefix sqlite3)/lib" \
