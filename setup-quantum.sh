@@ -14,7 +14,11 @@ if [ -d /Applications/Quantum.app ] ; then
 fi
 cp -a Kivy.app ${QUANTUM}
 cp -a /usr/local/llvm/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
-install_name_tool -id @executable_path/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
+#install_name_tool -id @executable_path/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
+pushd ${QUANTUM};
+pip install git+http://github.com/tito/osxrelocator;
+osxrelocator -r . @rpath/libomp.dylib @executable_path/.kivy/mods/libomp.dylib;
+popd;
 
 if [ -f /usr/local/bin/kivy ] ; then
     rm -rf /usr/local/bin/kivy;
@@ -41,7 +45,10 @@ popd; #mogwai
 # >>> tables.test()
 cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib ${LIBDIR}
 cp -a /usr/local/Cellar/hdf5/*/include/* ${INCLUDEDIR}/
-install_name_tool -id @executable_path/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
+#install_name_tool -id @executable_path/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
+pushd ${QUANTUM}
+osxrelocator . ${LIBDIR}/ @executable_path/.kivy/lib/
+popd;
 kivy -m pip install --install-option='--hdf5=$KIVYDIR' tables
 
 # -- Install Quantum module
@@ -55,7 +62,37 @@ fi;
 cp -a Quantum/QuantumCPP/Engine/*.h* ${INCLUDEDIR}/Engine;
 cp -a Quantum/QuantumCell/Engine/*.h* ${INCLUDEDIR}/Engine;
 
+pushd Quantum/QuantumCell;
+if [ -d build ]; then
+    rm -rf build;
+fi;
+mkdir build && cd build;
+cmake ..;
+make install;
+popd; # Quantum/QuantumCell
+pushd Quantum/QuantumAPI/src;
+python3 setup-llvm7.py build_ext --inplace -f;
+popd; # Quantum/QuantumAPI/src
+pushd ${QUANTUM};
+osxrelocator -r . ./Contents/Frameworks/python/3.5.2/lib/ @executable_path/../Frameworks/python/3.5.2/lib/;
+popd; # ${QUANTUM}
+
 # -- Install plugins
+if [! -d Quantum-PyCell ]; then
+    git clone git@github.com:uclatommy/Quantum-PyCell.git;
+fi;
+pushd Quantum-PyCell;
+if [ -d build ]; then
+    rm -rf build;
+fi;
+mkdir build && cd build;
+cmake ..;
+make install;
+popd;
+
+# -- Install source code
+mkdir ${QUANTUM}/Contents/Resources/yourapp
+cp -a Quantum/QuantumGUI/src/* ${QUANTUM}/Contents/Resources/yourapp
 
 popd; #cache
 echo "Done!";
