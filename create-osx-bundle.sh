@@ -32,6 +32,17 @@ $PLATYPUS -DBR -x -y \
 
 # --- Frameworks
 
+echo "-- Get TitanDB-0.5.4"
+if [! -d cache ]; then
+    mkdir cache;
+fi
+pushd cache;
+if [! -f cache/titan-0.5.4-hadoop2.zip ]; then
+    curl -O -L -f http://s3.thinkaurelius.com/downloads/titan/titan-0.5.4-hadoop2.zip;
+fi
+unzip -o titan-0.5.4-hadoop2.zip;
+popd;
+
 echo "-- Create Frameworks directory"
 mkdir -p Kivy.app/Contents/Frameworks
 
@@ -43,6 +54,7 @@ cp -a /Library/Frameworks/SDL2.framework .
 cp -a /Library/Frameworks/SDL2_image.framework .
 cp -a /Library/Frameworks/SDL2_ttf.framework .
 cp -a /Library/Frameworks/SDL2_mixer.framework .
+cp -a ${SCRIPT_PATH}/cache/titan-0.5.4-hadoop2 .
 
 echo "-- Reduce frameworks size"
 rm -rf {SDL2,SDL2_image,SDL2_ttf,SDL2_mixer,GStreamer}.framework/Headers
