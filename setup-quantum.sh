@@ -17,7 +17,7 @@ cp -a /usr/local/llvm/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
 #install_name_tool -id @executable_path/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
 pushd ${QUANTUM};
 pip install git+http://github.com/tito/osxrelocator;
-osxrelocator -r . @rpath/libomp.dylib @executable_path/.kivy/mods/libomp.dylib;
+osxrelocator -r . @rpath/libomp.dylib @executable_path/../Resources/.kivy/mods/libomp.dylib;
 popd;
 
 if [ -f /usr/local/bin/kivy ] ; then
@@ -47,7 +47,7 @@ cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib ${LIBDIR}
 cp -a /usr/local/Cellar/hdf5/*/include/* ${INCLUDEDIR}/
 #install_name_tool -id @executable_path/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
 pushd ${QUANTUM}
-osxrelocator . ${LIBDIR}/ @executable_path/.kivy/lib/
+osxrelocator . ${LIBDIR}/ @executable_path/../Resources/.kivy/lib/
 popd;
 kivy -m pip install --install-option='--hdf5=$KIVYDIR' tables
 
@@ -86,7 +86,7 @@ if [ -d build ]; then
     rm -rf build;
 fi;
 mkdir build && cd build;
-cmake ..;
+CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ cmake ..;
 make install;
 popd;
 

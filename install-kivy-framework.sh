@@ -160,25 +160,16 @@ popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources
 # --- Relocation
 echo "-- Relocate frameworks"
 pushd ${SCRIPT_PATH}/Kivy.app
-osxrelocator -r . /Library/Frameworks/GStreamer.framework/ \
-@executable_path/../Frameworks/GStreamer.framework/
-osxrelocator -r . /Library/Frameworks/SDL2/ \
-@executable_path/../Frameworks/SDL2/
-osxrelocator -r . /Library/Frameworks/SDL2_ttf/ \
-@executable_path/../Frameworks/SDL2_ttf/
-osxrelocator -r . /Library/Frameworks/SDL2_image/ \
-@executable_path/../Frameworks/SDL2_image/
-osxrelocator -r . @rpath/SDL2.framework/Versions/A/SDL2 \
-@executable_path/../Frameworks/SDL2.framework/Versions/A/SDL2
-osxrelocator -r . @rpath/SDL2_ttf.framework/Versions/A/SDL2_ttf \
-@executable_path/../Frameworks/SDL2_ttf.framework/Versions/A/SDL2_ttf
-osxrelocator -r . @rpath/SDL2_image.framework/Versions/A/SDL2_image \
-@executable_path/../Frameworks/SDL2_image.framework/Versions/A/SDL2_image
-osxrelocator -r . @rpath/SDL2_mixer.framework/Versions/A/SDL2_mixer \
-@executable_path/../Frameworks/SDL2_mixer.framework/Versions/A/SDL2_mixer
+osxrelocator -r . /Library/Frameworks/GStreamer.framework/ @executable_path/../Frameworks/GStreamer.framework/
+osxrelocator -r . /Library/Frameworks/SDL2/ @executable_path/../Frameworks/SDL2/
+osxrelocator -r . /Library/Frameworks/SDL2_ttf/ @executable_path/../Frameworks/SDL2_ttf/
+osxrelocator -r . /Library/Frameworks/SDL2_image/ @executable_path/../Frameworks/SDL2_image/
+osxrelocator -r . @rpath/SDL2.framework/Versions/A/SDL2 @executable_path/../Frameworks/SDL2.framework/Versions/A/SDL2
+osxrelocator -r . @rpath/SDL2_ttf.framework/Versions/A/SDL2_ttf @executable_path/../Frameworks/SDL2_ttf.framework/Versions/A/SDL2_ttf
+osxrelocator -r . @rpath/SDL2_image.framework/Versions/A/SDL2_image @executable_path/../Frameworks/SDL2_image.framework/Versions/A/SDL2_image
+osxrelocator -r . @rpath/SDL2_mixer.framework/Versions/A/SDL2_mixer @executable_path/../Frameworks/SDL2_mixer.framework/Versions/A/SDL2_mixer
 sudo chmod -R 755 $PYPATH/$PYTHONVER;
-osxrelocator -r . $PYPATH/$PYTHONVER \
-@executable_path/../Frameworks/python/$PYTHONVER
+osxrelocator -r . $PYPATH/$PYTHONVER @executable_path/../Frameworks/python/$PYTHONVER;
 popd; #${SCRIPT_PATH}/Kivy.app
 
 # relocate the activate script
@@ -216,15 +207,17 @@ popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources
 cp $SCRIPT_PATH/data/config.ini $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy;
 cp /usr/local/llvm/lib/libomp.dylib $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy/lib/libiomp5.dylib;
 
-sudo chmod -R 755 $PYPATH/$PYTHONVER;
-install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
-install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m;
-install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m
-install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
-install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
 pushd $PYPATH/$PYTHONVER;
 ln -s ../../../Frameworks Frameworks;
+ln -s ../../../Resources Resources;
 popd; #$PYPATH/$PYTHONVER
+
+sudo chmod -R 755 $PYPATH/$PYTHONVER;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
+#install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m;
+#install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m
 
 popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources/venv/bin/
 popd; #cache
