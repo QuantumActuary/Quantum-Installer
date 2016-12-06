@@ -1,4 +1,9 @@
 #!/bin/bash
+REBUILD_BOTTLES=false;
+if [ "$1" = "-r" ]; then
+    echo "Install will attempt to rebuild brew bottles...";
+    REBUILD_BOTTLES=true;
+fi;
 set -x #verbose
 set -e #exit on error
 
@@ -143,7 +148,7 @@ DOWNLOAD=https://github.com/uclatommy/travis-homebrew-bottle/releases/download/v
 # -- Install Valgrind
 VALGRIND=3.12.0
 VALGRINDBOTTLE=valgrind-${VALGRIND}.${OSXNAME}.bottle.1.tar.gz;
-BUILDVALGRIND=false;
+BUILDVALGRIND=false||REBUILD_BOTTLES;
 OMITVALGRIND=false;
 curl -O -L -f ${DOWNLOAD}${VALGRINDBOTTLE} || brew install $(ls valgrind-${VALGRIND}.${OSXNAME}.bottle*tar.gz) || BUILDVALGRIND=true;
 if [ "$BUILDVALGRIND" = true ]; then
@@ -190,7 +195,7 @@ brew upgrade sqlite3 || brew install sqlite3;
 brew link --force sqlite3;
 
 # -- Install Python3
-BUILDPYTHON=false;
+BUILDPYTHON=false||REBUILD_BOTTLES;
 PYTHON=3.5.2;
 PYTHONVER=${PYTHON}_3; #brew's python formula puts that _3 to denote that it can be used to build a bottle
 PYTHON3BOTTLE=python3-${PYTHONVER}.${OSXNAME}.bottle.1.tar.gz;
@@ -209,11 +214,11 @@ if [ "$BUILDPYTHON" = true ]; then
     CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK";
     MACOSX_DEPLOYMENT_TARGET=$OSXVER;
     if [ "$OMITVALGRIND" = false ]; then
-        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc --with-valgrind;
+        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip=install --without-gcc --with-valgrind;
     else
-        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip --without-gcc;
+        ./configure --prefix=/usr/local/Cellar/python3/$PYTHONVER --enable-ipv6 --datarootdir=/usr/local/Cellar/python3/$PYTHONVER/share --datadir=/usr/local/Cellar/python3/$PYTHONVER/share --enable-shared --with-ensurepip=install --without-gcc;
     fi;
-    make;
+    make VERBOSE=1;
     make install PYTHONAPPSDIR=/usr/local/Cellar/python3/$PYTHONVER;
     brew link --overwrite python3;
     popd;
@@ -225,7 +230,7 @@ brew link --overwrite python3;
 pip3 install --upgrade pip setuptools wheel;
 
 # -- Install hdf5
-BUILDHDF5=false;
+BUILDHDF5=false||REBUILD_BOTTLES;
 HDF5=1.8.17
 HDF5BOTTLE=hdf5-${HDF5}.${OSXNAME}.bottle.tar.gz;
 curl -O -L -f ${DOWNLOAD}${HDF5BOTTLE} || brew install $(ls hdf5-${HDF5}.${OSXNAME}.bottle*tar.gz) || BUILDHDF5=true;
@@ -238,7 +243,7 @@ if [ "$BUILDHDF5" = true ]; then
     fi;
     pushd hdf5-$HDF5;
     ./configure --prefix=/usr/local/Cellar/hdf5/$HDF5 --enable-production --enable-debug=no --disable-dependency-tracking --with-zlib=/usr --with-szlib=/usr/local/opt/szip --enable-static=yes --enable-shared=yes --enable-cxx --disable-fortran CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ CFLAGS="$MACOS_SDK" CPPFLAGS="$MACOS_SDK" LDFLAGS="$MACOS_SDK";
-    make;
+    make VERBOSE=1;
     make install;
     popd;
     brew bottle hdf5;
@@ -249,7 +254,7 @@ brew link --overwrite hdf5;
 
 # -- Install Boost
 BOOSTVER=1.62.0;
-BUILDBOOST=false
+BUILDBOOST=false||REBUILD_BOTTLES;
 BOOSTOVERRIDE=true #set to true if you want to use vanilla boost.
 BOOSTBOTTLE=boost-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTBOTTLE} || brew install $(ls boost-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOST=true;
@@ -285,11 +290,12 @@ fi;
 
 
 # -- Build Boost Python
-BUILDBOOSTPYTHON=false
+BUILDBOOSTPYTHON=false||REBUILD_BOTTLES;
 BOOSTPYTHONBOTTLE=boost-python-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTPYTHONBOTTLE} || brew install $(ls boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOSTPYTHON=true;
 if [ "$BUILDBOOSTPYTHON" = true ]; then
     brew uninstall --force boost-python || echo "Continuing...";
+    brew unlink boost-python;
     brew install --build-bottle boost-python --c++11 --with-python3 --without-python;
     if [ ! -d boost-python-$BOOSTVER ]; then
         brew unpack --patch --destdir=. boost-python;
@@ -311,7 +317,7 @@ fi;
 brew unlink boost-python || echo "Continuing...";
 brew install ${BOOSTPYTHONBOTTLE} || brew install boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz;
 brew link --overwrite boost-python;
-brew info boost-python
-ls -l /usr/local/Cellar/boost-python/$BOOSTVER
+#brew info boost-python
+#ls -l /usr/local/Cellar/boost-python/$BOOSTVER
 
 popd; #cache
