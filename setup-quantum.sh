@@ -2,6 +2,12 @@
 set -x;  # verbose
 set -e;  # exit on error
 
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+if([ -h "${SCRIPT_PATH}" ]) then
+  while([ -h "${SCRIPT_PATH}" ]) do SCRIPT_PATH=`readlink "${SCRIPT_PATH}"`; done
+fi
+SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SCRIPT_PATH}')))")
+
 BOOSTVER=1.62.0;
 QUANTUM=/Applications/Quantum.app
 INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include;
@@ -14,11 +20,11 @@ if [ -d /Applications/Quantum.app ] ; then
 fi
 cp -a Kivy.app ${QUANTUM}
 cp -a /usr/local/llvm/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
-#install_name_tool -id @executable_path/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
-pushd ${QUANTUM};
-pip install git+http://github.com/tito/osxrelocator;
-osxrelocator -r . @rpath/libomp.dylib @executable_path/../Resources/.kivy/mods/libomp.dylib;
-popd;
+install_name_tool -id @executable_path/../Resources/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
+#pushd ${QUANTUM};
+#pip install git+http://github.com/tito/osxrelocator;
+#osxrelocator -r . @rpath/libomp.dylib @executable_path/../Resources/.kivy/mods/libomp.dylib;
+#popd;
 
 if [ -f /usr/local/bin/kivy ] ; then
     rm -rf /usr/local/bin/kivy;
@@ -45,10 +51,10 @@ popd; #mogwai
 # >>> tables.test()
 cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib ${LIBDIR}
 cp -a /usr/local/Cellar/hdf5/*/include/* ${INCLUDEDIR}/
-#install_name_tool -id @executable_path/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
-pushd ${QUANTUM}
-osxrelocator . ${LIBDIR}/ @executable_path/../Resources/.kivy/lib/
-popd;
+install_name_tool -id @executable_path/../Resources/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
+#pushd ${QUANTUM}
+#osxrelocator . ${LIBDIR}/ @executable_path/../Resources/.kivy/lib/
+#popd;
 kivy -m pip install --install-option='--hdf5=$KIVYDIR' tables
 
 # -- Install Quantum module
@@ -75,6 +81,7 @@ python3 setup-llvm7.py build_ext --inplace -f;
 popd; # Quantum/QuantumAPI/src
 pushd ${QUANTUM};
 osxrelocator -r . ./Contents/Frameworks/python/3.5.2/lib/ @executable_path/../Frameworks/python/3.5.2/lib/;
+osxrelocator -r . $SCRIPT_PATH/Kivy.app/Contents @executable_path/..
 popd; # ${QUANTUM}
 
 # -- Install plugins
