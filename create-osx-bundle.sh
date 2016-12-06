@@ -30,6 +30,8 @@ $PLATYPUS -DBR -x -y \
     "$SCRIPT_PATH/data/script" \
     "$SCRIPT_PATH/Kivy.app"
 
+cp $SCRIPT_PATH/data/nogui $SCRIPT_PATH/Kivy.app/Contents/Resources/nogui
+
 # --- Frameworks
 
 echo "-- Get TitanDB-0.5.4"
