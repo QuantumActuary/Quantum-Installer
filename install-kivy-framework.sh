@@ -70,7 +70,7 @@ else
     CFLAGS="-pipe -w -Os -march=native -isystem/usr/local/include -isystem/usr/include/libxml2 -isystem/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix openssl)/include $MACOS_SDK" \
     MACOSX_DEPLOYMENT_TARGET=$OSXVER;
 fi;
-make;
+make VERBOSE=1;
 make install PYTHONAPPSDIR=$PYPATH/$PYTHONVER;
 if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
@@ -160,16 +160,25 @@ popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources
 # --- Relocation
 echo "-- Relocate frameworks"
 pushd ${SCRIPT_PATH}/Kivy.app
-osxrelocator -r . /Library/Frameworks/GStreamer.framework/ @executable_path/../Frameworks/GStreamer.framework/
-osxrelocator -r . /Library/Frameworks/SDL2/ @executable_path/../Frameworks/SDL2/
-osxrelocator -r . /Library/Frameworks/SDL2_ttf/ @executable_path/../Frameworks/SDL2_ttf/
-osxrelocator -r . /Library/Frameworks/SDL2_image/ @executable_path/../Frameworks/SDL2_image/
-osxrelocator -r . @rpath/SDL2.framework/Versions/A/SDL2 @executable_path/../Frameworks/SDL2.framework/Versions/A/SDL2
-osxrelocator -r . @rpath/SDL2_ttf.framework/Versions/A/SDL2_ttf @executable_path/../Frameworks/SDL2_ttf.framework/Versions/A/SDL2_ttf
-osxrelocator -r . @rpath/SDL2_image.framework/Versions/A/SDL2_image @executable_path/../Frameworks/SDL2_image.framework/Versions/A/SDL2_image
-osxrelocator -r . @rpath/SDL2_mixer.framework/Versions/A/SDL2_mixer @executable_path/../Frameworks/SDL2_mixer.framework/Versions/A/SDL2_mixer
-sudo chmod -R 755 $PYPATH/$PYTHONVER;
-osxrelocator -r . $PYPATH/$PYTHONVER @executable_path/../Frameworks/python/$PYTHONVER;
+osxrelocator -r . /Library/Frameworks/GStreamer.framework/ \
+@executable_path/../Frameworks/GStreamer.framework/
+osxrelocator -r . /Library/Frameworks/SDL2/ \
+@executable_path/../Frameworks/SDL2/
+osxrelocator -r . /Library/Frameworks/SDL2_ttf/ \
+@executable_path/../Frameworks/SDL2_ttf/
+osxrelocator -r . /Library/Frameworks/SDL2_image/ \
+@executable_path/../Frameworks/SDL2_image/
+osxrelocator -r . @rpath/SDL2.framework/Versions/A/SDL2 \
+@executable_path/../Frameworks/SDL2.framework/Versions/A/SDL2
+osxrelocator -r . @rpath/SDL2_ttf.framework/Versions/A/SDL2_ttf \
+@executable_path/../Frameworks/SDL2_ttf.framework/Versions/A/SDL2_ttf
+osxrelocator -r . @rpath/SDL2_image.framework/Versions/A/SDL2_image \
+@executable_path/../Frameworks/SDL2_image.framework/Versions/A/SDL2_image
+osxrelocator -r . @rpath/SDL2_mixer.framework/Versions/A/SDL2_mixer \
+@executable_path/../Frameworks/SDL2_mixer.framework/Versions/A/SDL2_mixer
+chmod -R 755 $PYPATH/$PYTHONVER;
+osxrelocator -r . $PYPATH/$PYTHONVER \
+@executable_path/../Frameworks/python/$PYTHONVER
 popd; #${SCRIPT_PATH}/Kivy.app
 
 # relocate the activate script
@@ -208,11 +217,17 @@ cp $SCRIPT_PATH/data/config.ini $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy;
 cp /usr/local/llvm/lib/libomp.dylib $SCRIPT_PATH/Kivy.app/Contents/Resources/.kivy/lib/libiomp5.dylib;
 
 pushd $PYPATH/$PYTHONVER;
+if [ -d Frameworks ]; then
+    rm Frameworks;
+fi;
+if [ -d Resources ]; then
+    rm Resources;
+fi;
 ln -s ../../../Frameworks Frameworks;
 ln -s ../../../Resources Resources;
 popd; #$PYPATH/$PYTHONVER
 
-sudo chmod -R 755 $PYPATH/$PYTHONVER;
+chmod -R 755 $PYPATH/$PYTHONVER;
 install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
 install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
 install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
