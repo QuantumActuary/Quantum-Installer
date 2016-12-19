@@ -100,11 +100,13 @@ chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
 
 # -- Install Boost-Python
 BOOSTVER=1.62.0
+chmod -R 765 $PYPATH/$PYTHONVER/lib
 cp -a /usr/local/Cellar/boost/$BOOSTVER/include/boost $PYPATH/$PYTHONVER/include
 cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
 cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
 cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.a $PYPATH/$PYTHONVER/lib/static/libboost_python3-mt.a;
 cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3.a $PYPATH/$PYTHONVER/lib/static/libboost_python3.a;
+chmod -R 755 $PYPATH/$PYTHONVER/lib
 
 # --- Python resources
 cp ${SCRIPT_PATH}/data/requirements.txt ${SCRIPT_PATH}/Kivy.app/Contents/Resources/requirements.txt;
