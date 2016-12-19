@@ -10,7 +10,7 @@ SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SC
 
 BOOSTVER=1.62.0;
 QUANTUM=/Applications/Quantum.app
-INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include;
+INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include/Quantum;
 LIBDIR=${QUANTUM}/Contents/Resources/.kivy/lib;
 KIVYDIR=${QUANTUM}/Contents/Resources/.kivy;
 
