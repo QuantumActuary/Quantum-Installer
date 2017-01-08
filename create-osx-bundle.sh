@@ -4,7 +4,7 @@ set -e  # exit on error
 
 PLATYPUS=/usr/local/bin/platypus
 SCRIPT_PATH="${BASH_SOURCE[0]}";
-PYTHONVER=3.5.2
+PYTHONVER=3.6.0
 
 PYTHON=python
 
@@ -39,9 +39,9 @@ if [! -d cache ]; then
     mkdir cache;
 fi
 pushd cache;
-if [! -f cache/titan-0.5.4-hadoop2.zip ]; then
+if [ ! -f cache/titan-0.5.4-hadoop2.zip ]; then
     curl -O -L -f http://s3.thinkaurelius.com/downloads/titan/titan-0.5.4-hadoop2.zip;
-fi
+fi;
 unzip -o titan-0.5.4-hadoop2.zip;
 popd;
 
@@ -94,3 +94,4 @@ echo "-- Copy gst-plugin-scanner"
 mv GStreamer.framework/Versions/Current/libexec/gstreamer-1.0/gst-plugin-scanner ../Resources
 
 popd
+echo "-- Done!";

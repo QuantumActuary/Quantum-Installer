@@ -196,8 +196,9 @@ brew link --force sqlite3;
 
 # -- Install Python3
 BUILDPYTHON=false||REBUILD_BOTTLES;
-PYTHON=3.5.2;
-PYTHONVER=${PYTHON}_3; #brew's python formula puts that _3 to denote that it can be used to build a bottle
+PYTHON=3.6.0;
+PYVER=3.6;
+PYTHONVER=${PYTHON};
 PYTHON3BOTTLE=python3-${PYTHONVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${PYTHON3BOTTLE} || brew install $(ls python3-${PYTHONVER}.${OSXNAME}.bottle*tar.gz) || BUILDPYTHON=true;
 if [ "$BUILDPYTHON" = true ]; then
@@ -228,10 +229,12 @@ brew unlink python3 || echo "Continuing...";
 brew install ${PYTHON3BOTTLE};
 brew link --overwrite python3;
 pip3 install --upgrade pip setuptools wheel;
+pip3 install cython==0.23;
+pip3 install git+http://github.com/tito/osxrelocator;
 
 # -- Install hdf5
 BUILDHDF5=false||REBUILD_BOTTLES;
-HDF5=1.8.17
+HDF5=1.8.18
 HDF5BOTTLE=hdf5-${HDF5}.${OSXNAME}.bottle.tar.gz;
 curl -O -L -f ${DOWNLOAD}${HDF5BOTTLE} || brew install $(ls hdf5-${HDF5}.${OSXNAME}.bottle*tar.gz) || BUILDHDF5=true;
 brew tap homebrew/science;
@@ -253,7 +256,7 @@ brew install ${HDF5BOTTLE} || brew install hdf5-${HDF5}.${OSXNAME}.bottle*tar.gz
 brew link --overwrite hdf5;
 
 # -- Install Boost
-BOOSTVER=1.62.0;
+BOOSTVER=1.63.0;
 BUILDBOOST=false||REBUILD_BOTTLES;
 BOOSTOVERRIDE=true #set to true if you want to use vanilla boost.
 BOOSTBOTTLE=boost-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
@@ -269,9 +272,9 @@ if [ "$BUILDBOOST" = true ] && [ "$BOOSTOVERRIDE" = false ]; then
     {
     echo "using darwin : : /usr/local/llvm/bin/clang++"
     echo "             : <cxxflags>$MACOS_SDK <linkflags>$MACOS_SDK <compileflags>$MACOS_SDK ;"
-    echo "using python : 3.5"
-    echo "             : /usr/local/bin/python3.5"
-    echo "             : /usr/local/Cellar/python3/$PYTHONVER/include/python3.5m ;"
+    echo "using python : ${PYVER}"
+    echo "             : /usr/local/bin/python${PYVER}"
+    echo "             : /usr/local/Cellar/python3/${PYTHONVER}/Frameworks/Python.framework/Versions/${PYVER}/include/python${PYVER}m ;"
     } > user-config.jam;
     ./b2 headers;
     ./b2 --prefix=/usr/local/Cellar/boost/$BOOSTVER --libdir=/usr/local/Cellar/boost/$BOOSTVER/lib -d2 -j4 --layout=tagged --user-config=user-config.jam install threading=multi,single link=shared,static;
@@ -295,7 +298,7 @@ BOOSTPYTHONBOTTLE=boost-python-${BOOSTVER}.${OSXNAME}.bottle.1.tar.gz;
 curl -O -L -f ${DOWNLOAD}${BOOSTPYTHONBOTTLE} || brew install $(ls boost-python-${BOOSTVER}.${OSXNAME}.bottle*tar.gz) || BUILDBOOSTPYTHON=true;
 if [ "$BUILDBOOSTPYTHON" = true ]; then
     brew uninstall --force boost-python || echo "Continuing...";
-    brew unlink boost-python;
+    brew unlink boost-python || echo "Continuing...";
     brew install --build-bottle boost-python --c++11 --with-python3 --without-python;
     if [ ! -d boost-python-$BOOSTVER ]; then
         brew unpack --patch --destdir=. boost-python;
@@ -305,11 +308,11 @@ if [ "$BUILDBOOSTPYTHON" = true ]; then
     {
     echo "using darwin : : /usr/local/llvm/bin/clang++"
     echo "             : <cxxflags>$MACOS_SDK <linkflags>$MACOS_SDK <compileflags>$MACOS_SDK ;"
-    echo "using python : 3.5"
-    echo "             : /usr/local/bin/python3.5"
-    echo "             : /usr/local/Cellar/python3/$PYTHONVER/include/python3.5m ;"
+    echo "using python : ${PYVER}"
+    echo "             : /usr/local/bin/python${PYVER}"
+    echo "             : /usr/local/Cellar/python3/${PYTHONVER}/Frameworks/Python.framework/Versions/${PYVER}/include/python${PYVER}m ;"
     } > user-config.jam;
-    ./b2 --build-dir=build-python3 --stagedir=stage-python3 python=3.5 --prefix=/usr/local/Cellar/boost-python/$BOOSTVER --libdir=/usr/local/Cellar/boost-python/$BOOSTVER/lib -d2 -j4 --layout=tagged --user-config=user-config.jam threading=multi,single link=shared,static install;
+    ./b2 --build-dir=build-python3 --stagedir=stage-python3 python=${PYVER} --prefix=/usr/local/Cellar/boost-python/$BOOSTVER --libdir=/usr/local/Cellar/boost-python/$BOOSTVER/lib -d2 -j4 --layout=tagged --user-config=user-config.jam threading=multi,single link=shared,static install;
     brew link --overwrite boost-python;
     popd;
     brew bottle boost-python;
@@ -321,3 +324,4 @@ brew link --overwrite boost-python;
 #ls -l /usr/local/Cellar/boost-python/$BOOSTVER
 
 popd; #cache
+echo "Done!";

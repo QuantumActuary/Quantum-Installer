@@ -8,9 +8,10 @@ if([ -h "${SCRIPT_PATH}" ]) then
 fi
 SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SCRIPT_PATH}')))")
 
-BOOSTVER=1.62.0;
+BOOSTVER=1.63.0;
+PYTHONVER=3.6.0;
 QUANTUM=/Applications/Quantum.app
-INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include/Quantum;
+INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include;
 LIBDIR=${QUANTUM}/Contents/Resources/.kivy/lib;
 KIVYDIR=${QUANTUM}/Contents/Resources/.kivy;
 
@@ -50,7 +51,7 @@ popd; #mogwai
 # >>> import tables
 # >>> tables.test()
 cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib ${LIBDIR}
-cp -a /usr/local/Cellar/hdf5/*/include/* ${INCLUDEDIR}/
+cp -R /usr/local/Cellar/hdf5/*/include/. ${INCLUDEDIR}/
 install_name_tool -id @executable_path/../Resources/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
 #pushd ${QUANTUM}
 #osxrelocator . ${LIBDIR}/ @executable_path/../Resources/.kivy/lib/
@@ -73,19 +74,19 @@ if [ -d build ]; then
     rm -rf build;
 fi;
 mkdir build && cd build;
-cmake ..;
+CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ cmake ..;
 make install;
 popd; # Quantum/QuantumCell
 pushd Quantum/QuantumAPI/src;
 python3 setup-llvm7.py build_ext --inplace -f;
 popd; # Quantum/QuantumAPI/src
 pushd ${QUANTUM};
-osxrelocator -r . ./Contents/Frameworks/python/3.5.2/lib/ @executable_path/../Frameworks/python/3.5.2/lib/;
+osxrelocator -r . ./Contents/Frameworks/python/${PYTHONVER}/lib/ @executable_path/../Frameworks/python/${PYTHONVER}/lib/;
 osxrelocator -r . $SCRIPT_PATH/Kivy.app/Contents @executable_path/..
 popd; # ${QUANTUM}
 
 # -- Install plugins
-if [! -d Quantum-PyCell ]; then
+if [ ! -d Quantum-PyCell ]; then
     git clone git@github.com:uclatommy/Quantum-PyCell.git;
 fi;
 pushd Quantum-PyCell;

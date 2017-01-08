@@ -8,7 +8,8 @@ set -x  # verbose
 set -e  # exit on error
 
 SCRIPT_PATH="${BASH_SOURCE[0]}";
-PYTHONVER=3.5.2;
+PYTHONVER=3.6.0;
+PYVER=3.6;
 OSXVER=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
 PYTHON=python
 
@@ -76,7 +77,7 @@ if [ -d $PYPATH/$PYTHONVER/lib/static ] ; then
     rm -rf $PYPATH/$PYTHONVER/lib/static;
 fi
 mkdir $PYPATH/$PYTHONVER/lib/static;
-cp libpython3.5m.a $PYPATH/$PYTHONVER/lib/static/libpython3.5m.a;
+cp libpython${PYVER}m.a $PYPATH/$PYTHONVER/lib/static/libpython${PYVER}m.a;
 pushd $PYPATH/$PYTHONVER/bin;
 if [ -f python ] ; then
     rm -rf python;
@@ -94,12 +95,12 @@ popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
 rm -rf $PYPATH/$PYTHONVER/share;
-rm -rf $PYPATH/$PYTHONVER/lib/python3.5/{test,unittest/test,turtledemo,tkinter};
-chmod -R 644 $PYPATH/$PYTHONVER/include/python3.5m/*
+rm -rf $PYPATH/$PYTHONVER/lib/python${PYVER}/{test,unittest/test,turtledemo,tkinter};
+chmod -R 644 $PYPATH/$PYTHONVER/include/python${PYVER}m/*
 #brew link python3;
 
 # -- Install Boost-Python
-BOOSTVER=1.62.0
+BOOSTVER=1.63.0
 chmod -R 765 $PYPATH/$PYTHONVER/lib
 cp -a /usr/local/Cellar/boost/$BOOSTVER/include/boost $PYPATH/$PYTHONVER/include
 cp -a /usr/local/Cellar/boost-python/$BOOSTVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
@@ -230,11 +231,11 @@ ln -s ../../../Resources Resources;
 popd; #$PYPATH/$PYTHONVER
 
 chmod -R 755 $PYPATH/$PYTHONVER;
-install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib;
+install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libpython${PYVER}m.dylib $PYPATH/$PYTHONVER/lib/libpython${PYVER}m.dylib;
 install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3-mt.dylib $PYPATH/$PYTHONVER/lib/libboost_python3-mt.dylib;
 install_name_tool -id @executable_path/../Frameworks/python/$PYTHONVER/lib/libboost_python3.dylib $PYPATH/$PYTHONVER/lib/libboost_python3.dylib;
-install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m;
-install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython3.5m.dylib @loader_path/../lib/libpython3.5m.dylib $PYPATH/$PYTHONVER/bin/python3.5m
+install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython${PYVER}m.dylib @loader_path/../lib/libpython${PYVER}m.dylib $PYPATH/$PYTHONVER/bin/python${PYVER}m;
+install_name_tool -change $PYPATH/$PYTHONVER/lib/libpython${PYVER}m.dylib @loader_path/../lib/libpython${PYVER}m.dylib $PYPATH/$PYTHONVER/bin/python${PYVER}m
 
 popd; #${SCRIPT_PATH}/Kivy.app/Contents/Resources/venv/bin/
 popd; #cache
