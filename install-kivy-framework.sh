@@ -91,6 +91,7 @@ ln -s pip3 pip;
 ls
 ./pip install --upgrade pip setuptools;
 ./pip install wheel;
+./pip install nose coverage;
 popd; #$PYPATH/$PYTHONVER/bin
 popd; #python3-$PYTHONVER
 
@@ -122,11 +123,11 @@ $PYTHON -m venv venv;
 echo "-- Install dependencies"
 source venv/bin/activate
 pip install --upgrade pip setuptools;
-pip install wheel;
-pip install cython==0.23 || echo "Skip cython...";
-pip install pygments docutils;
-pip install git+http://github.com/tito/osxrelocator;
-pip install virtualenv;
+# pip install wheel;
+# pip install cython==0.23 || echo "Skip cython...";
+# pip install pygments docutils;
+#pip install git+http://github.com/tito/osxrelocator;
+#pip install virtualenv;
 pip install -r requirements.txt;
 
 echo "-- Link python to the right location for relocation"
