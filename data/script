@@ -19,9 +19,17 @@ export GST_PLUGIN_SYSTEM_PATH="${SCRIPT_PATH}/../Frameworks/GStreamer.framework/
 export GIO_EXTRA_MODULES="${SCRIPT_PATH}/../Frameworks/GStreamer.framework/Versions/Current/lib/gio/modules"
 export KIVY_HOME="${SCRIPT_PATH}/.kivy"
 
+# default drag & drop support
+if [ $# -ne 0 ]; then
+        exec ${SCRIPT_PATH}/python "$@"
+
+# start a python shell, only if we didn't double-clicked
+elif [ "$SHLVL" -gt 1 ]; then
+        exec ${SCRIPT_PATH}/python
+
 # if an app is available, use it
-if [ -d "${SCRIPT_PATH}/yourapp" ]; then
-  cd "${SCRIPT_PATH}/yourapp"
+elif [ -d "${SCRIPT_PATH}/Quantum" ]; then
+  cd "${SCRIPT_PATH}/Quantum"
   if [ -f "main.so" ]; then
       exec "${SCRIPT_PATH}/python" -c "import main"
     exit 1
@@ -33,12 +41,4 @@ if [ -d "${SCRIPT_PATH}/yourapp" ]; then
         exec "${SCRIPT_PATH}/python" -m main "$@"
     exit 1
     fi
-
-# default drag & drop support
-elif [ $# -ne 0 ]; then
-        exec "${SCRIPT_PATH}/python" "$@"
-
-# start a python shell, only if we didn't double-clicked
-elif [ "$SHLVL" -gt 1 ]; then
-        exec "${SCRIPT_PATH}/python"
 fi
