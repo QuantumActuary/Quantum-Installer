@@ -99,8 +99,8 @@ make install;
 popd;
 
 # -- Install source code
-mkdir ${QUANTUM}/Contents/Resources/yourapp
-cp -a Quantum/QuantumGUI/src/* ${QUANTUM}/Contents/Resources/yourapp
+mkdir ${QUANTUM}/Contents/Resources/QuantumApp
+cp -a Quantum/QuantumGUI/src/* ${QUANTUM}/Contents/Resources/QuantumApp
 
 popd; #cache
 echo "Done!";
