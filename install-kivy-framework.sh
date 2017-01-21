@@ -201,9 +201,6 @@ ln -s ../../../frameworks/python/$PYTHONVER/bin/python3 ./python3;
 ln -s ../../../frameworks/python/$PYTHONVER/bin/python ./python;
 
 pushd ${SCRIPT_PATH}/Kivy.app/Contents/Resources;
-git clone https://gist.github.com/a1ff28ba2a3da95e8bf573d994d93b82.git scriptdir;
-cp scriptdir/script ./script;
-rm -rf scriptdir;
 if [ -d .kivy ] ; then
     rm -rf .kivy;
 fi

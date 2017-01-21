@@ -37,7 +37,7 @@ if [! -d cache ]; then
     mkdir cache;
 fi
 pushd cache;
-if [ ! -f cache/titan-0.5.4-hadoop2.zip ]; then
+if [ ! -f titan-0.5.4-hadoop2.zip ]; then
     curl -O -L -f http://s3.thinkaurelius.com/downloads/titan/titan-0.5.4-hadoop2.zip;
 fi;
 unzip -o titan-0.5.4-hadoop2.zip;
