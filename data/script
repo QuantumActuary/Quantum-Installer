@@ -18,7 +18,8 @@ export GST_PLUGIN_SYSTEM_PATH="${SCRIPT_PATH}/../Frameworks/GStreamer.framework/
 export GIO_EXTRA_MODULES="${SCRIPT_PATH}/../Frameworks/GStreamer.framework/Versions/Current/lib/gio/modules"
 export KIVY_HOME="${SCRIPT_PATH}/.kivy"
 export APP_HOME="${SCRIPT_PATH}/QuantumApp"
-export PYTHONPATH="${SCRIPT_PATH}/kivy:${KIVY_HOME}/extensions:${KIVY_HOME}/extensions/plugins:${KIVY_HOME}/mods:${APP_HOME}:${PYTHONPATH}"
+export USER_HOME="/Users/$(whoami)/.kivy"
+export PYTHONPATH="${SCRIPT_PATH}/kivy:${KIVY_HOME}/extensions:${KIVY_HOME}/extensions/plugins:${KIVY_HOME}/mods:${APP_HOME}:${USER_HOME}/extensions:${USER_HOME}/mods:${PYTHONPATH}"
 
 # default drag & drop support
 if [ $# -ne 0 ]; then
