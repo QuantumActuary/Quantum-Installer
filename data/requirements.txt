@@ -70,4 +70,4 @@ widgetsnbextension==1.2.3
 zope.interface==4.2.0
 tables==3.3.0
 sphinx
-git+http://github.com/tito/osxrelocator
+sphinx_rtd_theme

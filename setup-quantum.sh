@@ -21,16 +21,12 @@ if [ -d /Applications/Quantum.app ] ; then
 fi
 cp -a Kivy.app ${QUANTUM}
 cp -a /usr/local/llvm/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
-install_name_tool -id @executable_path/../Resources/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib;
-#pushd ${QUANTUM};
-#pip install git+http://github.com/tito/osxrelocator;
-#osxrelocator -r . @rpath/libomp.dylib @executable_path/../Resources/.kivy/mods/libomp.dylib;
-#popd;
+install_name_tool -id @executable_path/../Resources/.kivy/lib/libomp.dylib ${LIBDIR}/libomp.dylib
 
-if [ -f /usr/local/bin/kivy ] ; then
-    rm -rf /usr/local/bin/kivy;
+if [ -f /usr/local/bin/quantum ] ; then
+    rm -rf /usr/local/bin/quantum;
 fi
-ln -s ${QUANTUM}/Contents/Resources/script /usr/local/bin/kivy;
+ln -s ${QUANTUM}/Contents/Resources/script /usr/local/bin/quantum;
 
 # -- Install remaining requirements
 kivy -m pip install -r data/requirements.txt;
@@ -38,12 +34,11 @@ if [ ! -d cache ] ; then
     mkdir cache;
 fi;
 pushd cache;
-if [ -d mogwai ] ; then
-    rm -rf mogwai;
-fi
-git clone git@github.com:uclatommy/mogwai.git;
+if [ ! -d mogwai ] ; then
+    git clone git@github.com:uclatommy/mogwai.git;
+fi;
 pushd mogwai;
-kivy -m setup install;
+quantum -m setup install;
 popd; #mogwai
 
 # -- Install portable HDF5 and tables
@@ -53,10 +48,11 @@ popd; #mogwai
 cp -a /usr/local/Cellar/hdf5/*/lib/libhdf5.10.dylib ${LIBDIR}
 cp -R /usr/local/Cellar/hdf5/*/include/. ${INCLUDEDIR}/
 install_name_tool -id @executable_path/../Resources/.kivy/lib/libhdf5.10.dylib ${LIBDIR}/libhdf5.10.dylib
-#pushd ${QUANTUM}
-#osxrelocator . ${LIBDIR}/ @executable_path/../Resources/.kivy/lib/
-#popd;
-kivy -m pip install --install-option='--hdf5=$KIVYDIR' tables
+install_name_tool -id @executable_path/../Resources/.kivy/lib/libiomp5.dylib ${LIBDIR}/libiomp5.dylib
+pushd ${LIBDIR};
+osxrelocator -r . ./Contents/Resources @executable_path/../Resources;
+popd;
+quantum -m pip install --install-option='--hdf5=$KIVYDIR' tables
 
 # -- Install Quantum module
 # Build the Quantum python extension and copy all necessary headers for building plugins
@@ -78,12 +74,8 @@ CC=/usr/local/llvm/bin/clang CXX=/usr/local/llvm/bin/clang++ cmake ..;
 make install;
 popd; # Quantum/QuantumCell
 pushd Quantum/QuantumAPI/src;
-python3 setup-llvm7.py build_ext --inplace -f;
+quantum setup.py build_ext --inplace -f;
 popd; # Quantum/QuantumAPI/src
-pushd ${QUANTUM};
-osxrelocator -r . ./Contents/Frameworks/python/${PYTHONVER}/lib/ @executable_path/../Frameworks/python/${PYTHONVER}/lib/;
-osxrelocator -r . $SCRIPT_PATH/Kivy.app/Contents @executable_path/..
-popd; # ${QUANTUM}
 
 # -- Install plugins
 if [ ! -d Quantum-PyCell ]; then
@@ -102,5 +94,14 @@ popd;
 mkdir ${QUANTUM}/Contents/Resources/QuantumApp
 cp -a Quantum/QuantumGUI/src/* ${QUANTUM}/Contents/Resources/QuantumApp
 
+# -- Patch sphinx-build
+# TODO: Maybe not necessary. Doc build is now configured to use the virtual env. Review for removal.
+var="#!\/Applications\/Quantum.app\/Contents\/Resources\/python"
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-build
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-autogen
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-apidoc
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-quickstart
+
 popd; #cache
+osxrelocator -r ${KIVYDIR} ./libomp.dylib @executable_path/../Resources/.kivy/lib/libomp.dylib
 echo "Done!";
