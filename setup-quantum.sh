@@ -104,4 +104,6 @@ sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin
 
 popd; #cache
 osxrelocator -r ${KIVYDIR} ./libomp.dylib @executable_path/../Resources/.kivy/lib/libomp.dylib
+cp data/quantum.ini ${QUANTUM}/Contents/Resources/QuantumApp
+
 echo "Done!";
