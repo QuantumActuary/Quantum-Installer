@@ -9,7 +9,7 @@ fi
 SCRIPT_PATH=$(python -c "import os; print(os.path.realpath(os.path.dirname('${SCRIPT_PATH}')))")
 
 BOOSTVER=1.63.0;
-PYTHONVER=3.6.0;
+PYTHONVER=3.6.1;
 QUANTUM=/Applications/Quantum.app
 INCLUDEDIR=${QUANTUM}/Contents/Resources/.kivy/include;
 LIBDIR=${QUANTUM}/Contents/Resources/.kivy/lib;
@@ -97,10 +97,10 @@ cp -a Quantum/QuantumGUI/src/* ${QUANTUM}/Contents/Resources/QuantumApp
 # -- Patch sphinx-build
 # TODO: Maybe not necessary. Doc build is now configured to use the virtual env. Review for removal.
 var="#!\/Applications\/Quantum.app\/Contents\/Resources\/python"
-sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-build
-sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-autogen
-sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-apidoc
-sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.0/bin/sphinx-quickstart
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.1/bin/sphinx-build
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.1/bin/sphinx-autogen
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.1/bin/sphinx-apidoc
+sed "1s/.*/$var/" /Applications/Quantum.app/Contents/Frameworks/python/3.6.1/bin/sphinx-quickstart
 
 popd; #cache
 osxrelocator -r ${KIVYDIR} ./libomp.dylib @executable_path/../Resources/.kivy/lib/libomp.dylib

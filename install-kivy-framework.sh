@@ -8,7 +8,7 @@ set -x  # verbose
 set -e  # exit on error
 
 SCRIPT_PATH="${BASH_SOURCE[0]}";
-PYTHONVER=3.6.0;
+PYTHONVER=3.6.1;
 PYVER=3.6;
 OSXVER=$(sw_vers -productVersion | awk -F '.' '{print $1 "." $2}')
 PYTHON=python
